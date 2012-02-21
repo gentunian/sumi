@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tree>
+    <TellapicNode id="1" name="TellapicNode1" icon_src="/icons/user.png">
+        <TellapicNodeAction name="action1" type="boolean"></TellapicNodeAction>
+    </TellapicNode>
+    
+    <TellapicNode id="2" name="TellapicNode2" icon_src="/icons/user.png">
+        <TellapicNodeAction name="combo1" type="combo"><ComboData>1</ComboData>
+            <ComboData>21</ComboData>
+            <ComboData>si</ComboData>
+            <ComboData>no</ComboData>
+            <ComboData>algo</ComboData>
+         </TellapicNodeAction>
+    </TellapicNode>
+    
+    <TellapicNode id="3" name="TellapicNode3" icon_src="/icons/user.png">
+        <TellapicNodeAction name="alguna informacion editable" type="text"></TellapicNodeAction>
+    </TellapicNode>
+    
+    <TellapicNode id="4" name="TellapicNode4" icon_src="/icons/user.png">
+       <TellapicNodeAction name="alguna informacion editable tambien" type="color" editable="true">
+           <ColorData>#ffaabb</ColorData>
+       </TellapicNodeAction>
+       <TellapicNodeAction name="alguna informacion no editable" type="text" editable="false"></TellapicNodeAction>
+       <TellapicNodeAction name="click me!" type="boolean"></TellapicNodeAction>
+    </TellapicNode>
+    
+    <TellapicNode id="5" name="TellapicNode5" icon_src="/icons/user.png">
+        <TellapicNodeAction name="" type="combo">
+            <ComboData>uno</ComboData>
+            <ComboData>dos</ComboData>
+            <ComboData>tres</ComboData>
+            <ComboData>cuatro</ComboData>
+            <ComboData>cinco</ComboData>
+        </TellapicNodeAction>
+        <TellapicNode id="6" name="TellapicNode6" icon_src="/icons/user.png">
+            <TellapicNode id="7" name="TellapicNode7" icon_src="/icons/user.png">
+                <TellapicNodeAction name="combo7" type="combo">
+                    <ComboData>tres</ComboData>
+                    <ComboData>cuatro</ComboData>
+                    <ComboData>cinco</ComboData>
+                </TellapicNodeAction>
+            </TellapicNode>
+        </TellapicNode>
+    </TellapicNode>
+</tree>
