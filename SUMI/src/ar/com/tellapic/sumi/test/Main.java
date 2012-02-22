@@ -5,6 +5,9 @@ package ar.com.tellapic.sumi.test;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -71,8 +74,8 @@ public class Main {
 		setLookAndFeel();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				JFrame frame = new JFrame("GUMI");
-				TellapicTreeTable tree = new TellapicTreeTable();
+				JFrame frame = new JFrame("SUMI");
+				final TellapicTreeTable tree = new TellapicTreeTable();
 				tree.setFillsViewportHeight(true);
 				tree.registerRendererComponent(TellapicTreeTable.DEFAULT_COLOR_RENDERER_KEY, new NodeActionColorRenderer(true));
 				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_COLOR_EDITOR_KEY, new DefaultTellapicColorCellEditor());
@@ -82,6 +85,23 @@ public class Main {
 				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_TEXTFIELD_EDITOR_KEY, new DefaultCellEditor(new JTextField()));
 				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY,  new DefaultTellapicCheckBoxCellEditor());
 				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_COMBO_EDITOR_KEY,  new DefaultTellapicComboBoxCellEditor());
+				
+				
+				tree.registerRendererComponent("DualImageRenderer", new DualImageRenderer(true));
+				tree.registerRendererComponent("ItemsRenderer", new ItemsRenderer());
+				tree.registerRendererComponent("OrderIssuedRenderer", new OrderIssuedRenderer());
+				tree.registerEditorComponent("ItemsListEditor", new ItemsListEditor());
+				tree.addMouseWheelListener(new MouseWheelListener(){
+
+					@Override
+					public void mouseWheelMoved(MouseWheelEvent e) {
+						Point p = e.getPoint();
+						boolean v = tree.editCellAt(tree.rowAtPoint(p), tree.columnAtPoint(p));
+						System.out.println("v: "+v);
+						
+					}
+				});
+				tree.setRowHeight(90);
 				JToolBar toolbar = new JToolBar();
 				TellapicTreeTableModel model = new GumiUserManager();
 				tree.setTreeTableModel(model);
