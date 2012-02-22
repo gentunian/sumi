@@ -5,11 +5,8 @@ package ar.com.tellapic.sumi.treetable.renderer;
 
 import java.awt.Component;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.SpringLayout;
 import javax.swing.tree.TreePath;
 
 import ar.com.tellapic.sumi.treetable.TellapicNode;
@@ -33,58 +30,35 @@ import ar.com.tellapic.sumi.treetable.TellapicTreeTable;
  *         sebastian.treu(at)gmail.com
  *
  */
-public abstract class TellapicAbstractComboRenderer implements TellapicTableCellRenderer {
+public abstract class TellapicAbstractPanelRenderer extends JPanel implements TellapicTableCellRenderer{
 
-	protected JPanel     panel;
-	protected JLabel     label;
-	protected JComboBox  combo;
-	protected SpringLayout layout;
+	private static final long serialVersionUID = 1L;
 	
-	
-	/**
-	 * 
-	 */
-	public TellapicAbstractComboRenderer() {
-		panel = new JPanel();
-		label = new JLabel();
-		combo = new JComboBox();
-		layout = new SpringLayout(); 
-		layout.putConstraint(SpringLayout.WEST, label, 0, SpringLayout.WEST, panel);
-		layout.putConstraint(SpringLayout.NORTH, label, 0, SpringLayout.NORTH, panel);
-		layout.putConstraint(SpringLayout.WEST, combo, 1, SpringLayout.EAST, label);
-		layout.putConstraint(SpringLayout.SOUTH, combo, 0, SpringLayout.SOUTH, panel);
-		layout.putConstraint(SpringLayout.NORTH, combo, 0, SpringLayout.NORTH, panel);
-		layout.putConstraint(SpringLayout.EAST, combo, 0, SpringLayout.EAST, panel);
-		panel.setLayout(layout);
-		panel.add(label);
-		panel.add(combo);
+	public TellapicAbstractPanelRenderer() {
+		super();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 	 */
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-
 		if (isSelected) {
-			panel.setBackground(table.getSelectionBackground());
-			panel.setForeground(table.getSelectionForeground());
+			setBackground(table.getSelectionBackground());
+			setForeground(table.getSelectionForeground());
 		} else {
-			panel.setBackground(table.getBackground());
-			panel.setForeground(table.getForeground());
+			setBackground(table.getBackground());
+			setForeground(table.getForeground());
 		}
-		
-		
 		try {
 			TreePath path = ((TellapicTreeTable)table).getPathForRow(row);
 			TellapicNode node = (TellapicNode) path.getLastPathComponent();
 			TellapicNodeAction action = node.getActionAt(column);
 			configureRenderer(action, table, isSelected);
 		} catch(NullPointerException e) {
-			// Do nothing as we need to return the component either...
+			System.out.println("Renderer could not be configured");
+			e.printStackTrace();
 		}
-		combo.setSelectedItem(value);
-		return panel;
+		return this;
 	}
- 
 }

@@ -5,7 +5,6 @@ package ar.com.tellapic.sumi.treetable.renderer;
 
 import java.awt.Component;
 
-import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.tree.TreePath;
@@ -32,15 +31,14 @@ import ar.com.tellapic.sumi.treetable.TellapicTreeTable;
  *
  */
 public abstract class TellapicAbstractCheckBoxRenderer extends JCheckBox implements TellapicTableCellRenderer {
-	private static final long serialVersionUID = 1L;
 
-	//protected JCheckBox component;
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * 
 	 */
 	public TellapicAbstractCheckBoxRenderer() {
-		super();//component = new JCheckBox();
+		super();
 		setOpaque(true);
 	}
 
@@ -59,15 +57,15 @@ public abstract class TellapicAbstractCheckBoxRenderer extends JCheckBox impleme
 			setForeground(table.getForeground());
 		}
 		
-		TellapicNodeAction action = null;
 		try {
 			TreePath path = ((TellapicTreeTable)table).getPathForRow(row);
 			TellapicNode node = (TellapicNode) path.getLastPathComponent();
-			action = node.getActionAt(column);
-			setText((String) action.getAbstractAction().getValue(AbstractAction.NAME));
-		} catch(NullPointerException e) {
-			// Do nothing as we need to return the component either...
+			TellapicNodeAction action = node.getActionAt(column);
+			setText(action.getNodeActionName());
 			configureRenderer(action, table, isSelected);
+		} catch(NullPointerException e) {
+			System.out.println("Renderer could not be configured");
+			e.printStackTrace();
 		}
 		
 		return this;

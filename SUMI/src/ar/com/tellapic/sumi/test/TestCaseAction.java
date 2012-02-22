@@ -69,17 +69,21 @@ public class TestCaseAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		List<GumiUser> users = createUsers(40);
-		
-		for(int i = 0; i < users.size(); i++) {
-			if (i < 10)
-				model.addUser(users.get(i), createLabelActions(3));
-			else if (i >= 10 && i < 20)
-				model.addUser(users.get(i), createComboActions(2));
-			else if (i >=20 && i < 30)
-				model.addUser(users.get(i), createCheckboxActions(4));
-			else
-				model.addUser(users.get(i), createColorActions(5));
-		}
+		model.addUser(users.get(0), createTest(3));
+//		for(int i = 0; i < users.size(); i++) {
+//			if (i < 10) {
+//				List<TellapicNodeAction> l = createLabelActions(1);
+//				l.addAll(createComboActions(1));
+//				l.addAll(createColorActions(2));
+//				model.addUser(users.get(i), l);
+//			}
+//			else if (i >= 10 && i < 20)
+//				model.addUser(users.get(i), createComboActions(2));
+//			else if (i >=20 && i < 30)
+//				model.addUser(users.get(i), createCheckboxActions(4));
+//			else
+//				model.addUser(users.get(i), createColorActions(5));
+//		}
 	}
 	
 	private List<GumiUser> createUsers(int howMany) {
@@ -124,6 +128,17 @@ public class TestCaseAction extends AbstractAction {
 			TellapicNodeAction nodeAction = new DefaultTellapicNodeActionColor("color"+i, colorArray [i%10], i%2==0);
 			actions.add(nodeAction);
 		}
+		return actions;
+	}
+	
+	private List<TellapicNodeAction> createTest(int howMany) {
+		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
+		TellapicNodeAction a1 = new OrderIssuedNodeAction("", new String[]{"SO-123","12/12/12"}, false);
+		TellapicNodeAction a2 = new ItemsNodeAction("", new String[]{"item1","item2","item3"}, false);
+		TellapicNodeAction a3 = new DualImageNodeAction();
+		actions.add(a1);
+		actions.add(a2);
+		actions.add(a3);
 		return actions;
 	}
 }
