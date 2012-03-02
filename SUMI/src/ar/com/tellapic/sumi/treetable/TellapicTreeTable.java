@@ -14,6 +14,7 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
+import ar.com.tellapic.sumi.treetable.editor.AbstractTellapicCellEditor;
 import ar.com.tellapic.sumi.treetable.renderer.TellapicHierarchicalCellRenderer;
 import ar.com.tellapic.sumi.treetable.renderer.TellapicTableCellRenderer;
 
@@ -129,7 +130,11 @@ public class TellapicTreeTable extends JXTreeTable {
 		TreePath path = getPathForRow(row);
 		TellapicNode node = (TellapicNode) path.getLastPathComponent();
 		//return node.getActionAt(column).getEditor();
-		return editorsMap.get(node.getEditorKeyForColumn(column));
+		TableCellEditor editor = editorsMap.get(node.getEditorKeyForColumn(column));
+		if (editor instanceof AbstractTellapicCellEditor)
+		    ((AbstractTellapicCellEditor) editor).setTellapicNodeAction(node.getActionAt(column));
+		
+		return editor;
 	}
 
 	/**
