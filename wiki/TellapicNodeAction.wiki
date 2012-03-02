@@ -326,3 +326,5 @@ model.insertNodeInto(node, insertNodeAt, insertAtNode.getChildCount());
 === The results with a more elaborated example ===
 
 [http://i.imgur.com/QkmGu.png This is how it should look in a complete example.]
+
+http://i.imgur.com/QkmGu.png
