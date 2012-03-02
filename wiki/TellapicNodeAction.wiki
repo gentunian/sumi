@@ -9,15 +9,15 @@ For the whole project perspective, an abstract class called `DefaultAbstractTell
 So, what we should expect from concretes `DefaultAbstractTellapicNodeAction` objects?
 
 Basically, this objects have:
-  * A reference to a Swing `AbstractAction` object (it could be `null`).
-  * A key that indicates what kind of renderer it will use (more on this later).
-  * A key that indicates what kind of editor it will use (more on this later).
-  * A reference to a `TellapicNode` that is the node from the tree hierarchical column that contains an user object (see `AbstractMutableTreeTableNode`)
-  * An `Object` that represents de cell value.
-  * A name.
+  * A reference to a Swing `AbstractAction` object (it could be `null`),
+  * A key that indicates what kind of renderer it will use (more on this later),
+  * A key that indicates what kind of editor it will use (more on this later),
+  * A reference to a `TellapicNode` that is the node from the tree hierarchical column that contains an user object (see `AbstractMutableTreeTableNode`),
+  * An `Object` that represents the cell value,
+  * A name,
   * And a boolean value indicating if the cell that we are representing is editable.
 
-You may note that `DefaultAbstractTellapicNodeAction` provides information and placeholders to know enough on how to interact/represent/modify the data in a custom column for a specific node. Each _node action_ is information that a specific node provides, with the ability to interact and modify that information. So, you _attach_ `DefaultAbstractTellapicNodeAction` objects to `TellapicNode`s. These objects are shown in cells, and they are placed along columns and rows in the treetable. To be exact, none of this object is actually shown or rendered. This objects provides the mechanism to show, modify, and interact with the model data. They preserve a relationship with the nodes from the tree model in the sense that, they represent some action on the node (or user object), some information from the node, etc.
+You may note that `DefaultAbstractTellapicNodeAction` provides information and placeholders to know enough on how to interact/represent/modify the data in a custom column for a specific node. Each _node action_ is information that a specific node provides with the ability to interact and modify that information. So, you _attach_ `DefaultAbstractTellapicNodeAction` objects to `TellapicNode`s. These objects are shown in cells and they are placed along columns and rows in the treetable. To be exact, none of these objects are _actually shown_ or rendered. These objects provides the mechanism to show, modify, and interact with the model data. They preserve a relationship with the nodes from the tree model in the sense that they represent some action on the node (or user object); some information from the node; etc.
 
 The basic use of this _actions_ is as follows:
 
