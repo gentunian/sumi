@@ -83,7 +83,7 @@ public class SomeSwingAction extends AbstractAction {
 
 === Point 2: Extend `DefaultAbstractTellapicNodeAction` ===
 
-*Take note that keys are hardcoded for simplicity*
+Take note that keys are hardcoded for simplicity
 
 {{{
 package ar.com.tellapic.sumi.test;
