@@ -197,7 +197,7 @@ public class DualImageRenderer extends TellapicAbstractPanelRenderer {
 
 === Point 4: Create the editor ===
 
-The following class is intended to get more work on it and include a button default editor in the package. Now is almost written for this example only.
+The following class need to get more work on it and defines a _button default editor_ in the package. Is almost written for this example only.
 
 {{{
 public class DefaultTellapicButtonEditor extends AbstractTellapicCellEditor implements TableCellEditor {
