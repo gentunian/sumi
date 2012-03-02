@@ -9,10 +9,10 @@ For the whole project perspective, an abstract class called `DefaultAbstractTell
 So, what we should expect from concretes `DefaultAbstractTellapicNodeAction` objects?
 
 Basically, this objects have:
-  * A reference to a Swing `AbstractAction` object (it could be `null`),
-  * A key that indicates what kind of renderer it will use (more on this later),
-  * A key that indicates what kind of editor it will use (more on this later),
-  * A reference to a `TellapicNode` that is the node from the tree hierarchical column that contains an user object (see `AbstractMutableTreeTableNode`),
+  * A reference to a Swing `AbstractAction` object (_it could be_ `null`),
+  * A key that indicates what kind of renderer it will use (_more on this later_),
+  * A key that indicates what kind of editor it will use (_more on this later_),
+  * A reference to a `TellapicNode` that is the node from the tree hierarchical column that contains an user object (_see_ `AbstractMutableTreeTableNode`),
   * An `Object` that represents the cell value,
   * A name,
   * And a boolean value indicating if the cell that we are representing is editable.
@@ -21,11 +21,11 @@ You may note that `DefaultAbstractTellapicNodeAction` provides information and p
 
 The basic use of these _actions_ is as follows:
 
-  * If desired, create a concrete class from `AbstractAction` to do something (_`ActionEvent.getSource()` will return a `DefaultAbstractTellapicNodeAction` object if you extended the behaviour-desired class_).
+  * If desired, create a concrete class from `AbstractAction` to do something (`ActionEvent.getSource()` _will return a_ `DefaultAbstractTellapicNodeAction` _object if you extended the behaviour-desired class_).
 
-  * Extend `DefaultAbstractTellapicNodeAction` if none of the default classes (_`DefaultTellapicNodeActionButton` ,`DefaultTellapicNodeActionCheckBox`,`DefaultTellapicNodeActionColor`,  `DefaultTellapicNodeActionCombo`,  `DefaultTellapicNodeActionLabel`_) suits your needs. Take note that interaction with the model is made the abstract class. You could override as needed or create your custom implementation directly from `TellapicNodeAction`, but you will miss most of the trick.
+  * Extend `DefaultAbstractTellapicNodeAction` if none of the default classes (`DefaultTellapicNodeActionButton` ,`DefaultTellapicNodeActionCheckBox`,`DefaultTellapicNodeActionColor`,  `DefaultTellapicNodeActionCombo`,  `DefaultTellapicNodeActionLabel`) suits your needs. Take note that interaction with the model is made the abstract class. You could override as needed or create your custom implementation directly from `TellapicNodeAction`, but you will miss most of the trick.
 
-  * Create the renderer if needed. Renderers should implement `TellapicTableCellRenderer` (_I'll remove that constraint in a near future. The fact is that the interface extends `TableCellRenderer` and provides `configureRenderer()` method called inside `TellapicTreeTable` with the correct action node_).
+  * Create the renderer if needed. Renderers should implement `TellapicTableCellRenderer` (_I'll remove that constraint in a near future. The fact is that the interface extends_ `TableCellRenderer` _and provides_ `configureRenderer()` _method called inside_ `TellapicTreeTable` _with the correct action node_).
 
  * Create the editor if we need to interact with the information provided by the model. It's recommended to extend `AbstractTellapicCellEditor` as that abstract class overrides `stopCellEditing()` from `AbstractCellEditor` to perform the `AbstractAction` and execute the action over the node.
 
