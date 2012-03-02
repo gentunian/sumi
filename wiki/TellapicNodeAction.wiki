@@ -322,3 +322,8 @@ node.addAction(nodeAction);
 model.insertNodeInto(node, insertNodeAt, insertAtNode.getChildCount());
 ...
 }}}
+
+=== The results with a more elaborated example ===
+
+
+[http://i.imgur.com/QkmGu.png http://i.imgur.com/QkmGu.png]
