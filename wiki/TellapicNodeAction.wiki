@@ -1,0 +1,43 @@
+#summary One-sentence summary of this page.
+
+= What role `TellapicNodeAction` objects should play? =
+
+`TellapicNodeAction` is an interface that defines a couple of methods that some object should implement in order to follow an expected behaviour, but anyone can implement that interface as they want.
+
+For the whole project perspective, an abstract class called `DefaultAbstractTellapicNodeAction` implements the mentioned interface and defines the _expected behaviour_ stated above.
+
+So, what we should expect from concretes `DefaultAbstractTellapicNodeAction` objects?
+
+Basically, this objects have:
+  * A reference to a Swing `AbstractAction` object (it could be `null`).
+  * A key that indicates what kind of renderer it will use (more on this later).
+  * A key that indicates what kind of editor it will use (more on this later).
+  * A reference to a `TellapicNode` that is the node from the tree hierarchical column that contains an user object (see `AbstractMutableTreeTableNode`)
+  * An `Object` that represents de cell value.
+  * A name.
+  * And a boolean value indicating if the cell that we are representing is editable.
+
+You may note that `DefaultAbstractTellapicNodeAction` provides information and placeholders to know enough on how to interact/represent/modify the data in a custom column for a specific node. Each _node action_ is information that a specific node provides, with the ability to interact and modify that information. So, you _attach_ `DefaultAbstractTellapicNodeAction` objects to `TellapicNode`s. These objects are shown in cells, and they are placed along columns and rows in the treetable. To be exact, none of this object is actually shown or rendered. This objects provides the mechanism to show, modify, and interact with the model data. They preserve a relationship with the nodes from the tree model in the sense that, they represent some action on the node (or user object), some information from the node, etc.
+
+The basic use of this _actions_ is as follows:
+
+  * If desired, create a concrete class from `AbstractAction` to do something (`ActionEvent.getSource()` will return a `DefaultAbstractTellapicNodeAction` object if you extended the behaviour-desired class)
+
+  * Extend `DefaultAbstractTellapicNodeAction` if none of the default classes (`DefaultTellapicNodeActionButton` ,`DefaultTellapicNodeActionCheckBox`,`DefaultTellapicNodeActionColor`,  `DefaultTellapicNodeActionCombo`,  `DefaultTellapicNodeActionLabel`) suits your needs. Take note that interaction with the model is made the abstract class. You could override as needed or create your custom implementation directly from `TellapicNodeAction`, but you will miss most of the trick.
+
+  * Create the renderer if needed. Renderers should implement `TellapicTableCellRenderer` (I'll remove that constraint in a near future. The fact is that the interface extends `TableCellRenderer` and provides `configureRenderer()` method called inside `TellapicTreeTable` with the correct action node).
+
+ * Create the editor if we need to interact with the information provided by the model. It's recommended to extend `AbstractTellapicCellEditor` as that abstract class overrides `stopCellEditing()` from `AbstractCellEditor` to perform the `AbstractAction` and execute the action over the node.
+
+  * Register renderers and editors with the `TellapicTreeTable` object calling `registerRendererComponent()` and `registerEditorComponent()` respectively.
+
+Everything is set up if you follow the above instructions. The last thing to do is to add user objects to nodes, add actions to nodes, add nodes to the model, etc.
+
+
+
+
+
+
+
+
+
