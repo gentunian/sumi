@@ -235,7 +235,7 @@ public class DefaultTellapicButtonEditor extends AbstractTellapicCellEditor impl
 }
 }}}
 
-I don't encourage the use of these classes! I serialize and deserialize the used renderer because I know what I'm doing here. It's a my `DualImageRenderer` so I copy the objects as the can be de/serialized and I take advantage of it for avoid copying each property.
+I don't encourage the use of these classes! I serialize and deserialize the used renderer because I know what I'm doing here. It's a `DualImageRenderer` so I copy the objects as they can be de/serialized and I take advantage of it for avoid copying each property.
 
 {{{
 public class TickButtonEditor extends DefaultTellapicButtonEditor implements TableCellEditor {
