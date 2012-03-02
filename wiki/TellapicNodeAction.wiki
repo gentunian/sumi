@@ -34,10 +34,291 @@ The basic use of this _actions_ is as follows:
 Everything is set up if you follow the above instructions. The last thing to do is to add user objects to nodes, add actions to nodes, add nodes to the model, etc.
 
 
+== Minimal Example ==
 
+What follows is an example to get you in the main idea. It should be noted that some portions of code should be avoided, cleaned and/or redesigned. For simplicity, and in order to answer [http://stackoverflow.com/questions/8923089/swing-jtable-custom-rendering/9375212 @gumuru question] I've made this custom example shorter and directly to the design idea:
 
+=== Point 1: Create an `AbstractAction` object ===
 
+{{{
+package ar.com.tellapic.sumi.test;
 
+import java.awt.event.ActionEvent;
 
+/**
+ *   Copyright (c) 2010 Sebastián Treu.
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; version 2 of the License.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ * @author
+ *         Sebastian Treu 
+ *         sebastian.treu(at)gmail.com
+ *
+ */
+public class SomeSwingAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
+    public SomeSwingAction() {
+        putValue(AbstractAction.NAME, "SomeSwingAction");
+    }
+    
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        TellapicNodeAction action = (TellapicNodeAction) e.getSource();
+        TellapicNode node = action.getNode();
+        JOptionPane.showMessageDialog(null, "ActionPerformed for node: "+node);
+    }
+}
+}}}
 
+=== Point 2: Extend `DefaultAbstractTellapicNodeAction` ===
+
+*Take note that keys are hardcoded for simplicity*
+
+{{{
+package ar.com.tellapic.sumi.test;
+
+import javax.swing.AbstractAction;
+
+import ar.com.tellapic.sumi.treetable.DefaultAbstractTellapicNodeAction;
+
+/**
+ *   Copyright (c) 2010 Sebastián Treu.
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; version 2 of the License.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ * @author
+ *         Sebastian Treu 
+ *         sebastian.treu(at)gmail.com
+ *
+ */
+public class DualImageNodeAction extends DefaultAbstractTellapicNodeAction {
+
+    /**
+     * @param action The action that will be triggered.
+     */
+    public DualImageNodeAction(AbstractAction action) {
+        super(action, "TickButtonEditor", "DualImageRenderer", true);
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.TellapicNodeAction#getData()
+     */
+    @Override
+    public Object getData() {
+        return new String[] {"/icons/Warning.png", "/icons/ok.png"};
+    }
+}
+}}}
+
+=== Point 3: Create the renderer ===
+
+{{{
+package ar.com.tellapic.sumi.test;
+
+import java.awt.BorderLayout;
+
+/**
+ *   Copyright (c) 2010 Sebastián Treu.
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; version 2 of the License.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ * @author
+ *         Sebastian Treu 
+ *         sebastian.treu(at)gmail.com
+ *
+ */
+public class DualImageRenderer extends TellapicAbstractPanelRenderer {
+    private JLabel labelImage;
+    private JButton buttonImage;
+
+    public DualImageRenderer(boolean vertical) {
+        super();
+
+        labelImage = new JLabel();
+        buttonImage = new JButton();
+        labelImage.setHorizontalAlignment(JLabel.HORIZONTAL);
+        labelImage.setVerticalAlignment(JLabel.CENTER);
+        buttonImage.setHorizontalAlignment(JLabel.HORIZONTAL);
+        buttonImage.setVerticalAlignment(JLabel.CENTER);
+        if (!vertical) {
+            setLayout(new GridLayout(0, 2));
+            add(labelImage, BorderLayout.EAST);
+            add(buttonImage, BorderLayout.WEST);
+        } else { 
+            setLayout(new GridLayout(2, 0));
+            add(labelImage, BorderLayout.NORTH);
+            add(buttonImage, BorderLayout.SOUTH);
+        }
+    }
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.renderer.TellapicTableCellRenderer#configureRenderer(ar.com.tellapic.sumi.treetable.TellapicNodeAction, javax.swing.JTable, boolean)
+     */
+    @Override
+    public void configureRenderer(TellapicNodeAction action, JTable table, boolean isSelected) {
+        String[] data = (String[])action.getData();
+        labelImage.setIcon(new ImageIcon(DualImageRenderer.class.getResource(data[0])));
+        buttonImage.setIcon(new ImageIcon(DualImageRenderer.class.getResource(data[1])));
+    }
+    
+    public JButton getButtonImage() {
+        return buttonImage;
+    }
+    
+    public JLabel getLabelImage() {
+        return labelImage;
+    }
+}
+}}}
+
+=== Point 4: Create the editor ===
+
+The following class is intended to get more work on it and include a button default editor in the package. Now is almost written for this example only.
+
+{{{
+public class DefaultTellapicButtonEditor extends AbstractTellapicCellEditor implements TableCellEditor {
+
+    private static final long serialVersionUID = 1L;
+
+    protected JButton editor;
+    
+    public DefaultTellapicButtonEditor() {
+        editor = new JButton();
+        editor.setOpaque(true);
+        editor.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stopCellEditing();
+            }
+        });
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.swing.CellEditor#getCellEditorValue()
+     */
+    @Override
+    public Object getCellEditorValue() {
+        return "Testing";
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+     */
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        return editor;
+    }
+}
+}}}
+
+I don't encourage the use of these classes! I serialize and deserialize the used renderer because I know what I'm doing here. It's a my `DualImageRenderer` so I copy the objects as the can be de/serialized and I take advantage of it for avoid copying each property.
+
+{{{
+public class TickButtonEditor extends DefaultTellapicButtonEditor implements TableCellEditor {
+    private static final long serialVersionUID = 1L;
+    
+    public TickButtonEditor() {
+        super();
+    }
+   
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+     */
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        TableCellRenderer renderer = table.getCellRenderer(row, column);
+        DualImageRenderer dualImageRenderer = (DualImageRenderer) renderer.getTableCellRendererComponent(table, value, isSelected, true, row, column);
+        DualImageRenderer clonedRenderer = (DualImageRenderer) clonePanel(dualImageRenderer);
+        JButton rendererButton = clonedRenderer.getButtonImage();
+        clonedRenderer.remove(rendererButton);
+        editor.setIcon(rendererButton.getIcon());
+        clonedRenderer.add(editor);
+        if (isSelected) {
+            clonedRenderer.setBackground(table.getSelectionBackground());
+            clonedRenderer.setForeground(table.getSelectionForeground());
+        } else {
+            clonedRenderer.setBackground(table.getBackground());
+            clonedRenderer.setForeground(table.getForeground());
+        }
+        return clonedRenderer;
+    }
+    
+    /**
+     * 
+     * @param toClone
+     * @return
+     */
+    private JComponent clonePanel(JComponent toClone) {
+        JComponent c = null;
+        FileOutputStream fos;
+        ObjectOutputStream oos = null;
+        try {
+            fos = new FileOutputStream("myObject.ser");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(toClone);
+            oos.flush();
+            oos.close();
+            // Deserialize the object persisted in "myObject.ser"
+            FileInputStream fis = new FileInputStream("myObject.ser");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            c = (JComponent) ois.readObject();
+            ois.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return c;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.CellEditor#getCellEditorValue()
+     */
+    @Override
+    public Object getCellEditorValue() {
+        return "SomethingUseful";
+    }
+}
+}}}
+
+=== Point 5: Register renderers and editors ===
+
+{{{
+...
+tree.registerRendererComponent("DualImageRenderer", new DualImageRenderer(true));
+tree.registerEditorComponent("TickButtonEditor", new TickButtonEditor());
+...
+// somewhere when you add nodes and set actions...
+String str = "Hello World!";
+TellapicNodeAction nodeAction = new DualImageNodeAction(new SomeSwingAction());
+TellapicNode node = new TellapicNode(str, null); //null = no Icon.
+node.addAction(nodeAction);
+model.insertNodeInto(node, insertNodeAt, insertAtNode.getChildCount());
+...
+}}}
