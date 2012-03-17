@@ -23,7 +23,7 @@ The basic use of these _actions_ is as follows:
 
   * If desired, create a concrete class from `AbstractAction` to do something (`ActionEvent.getSource()` _will return a_ `DefaultAbstractTellapicNodeAction` _object if you've extended the behaviour-desired class_).
 
-  * Extend `DefaultAbstractTellapicNodeAction` if none of the default classes (`DefaultTellapicNodeActionButton` ,`DefaultTellapicNodeActionCheckBox`,`DefaultTellapicNodeActionColor`,  `DefaultTellapicNodeActionCombo`,  `DefaultTellapicNodeActionLabel`) suits your needs. Take note that interaction with the model is made the abstract class. You could override as needed or create your custom implementation directly from `TellapicNodeAction`, but you will miss most of the trick.
+  * Extend `DefaultAbstractTellapicNodeAction` if none of the default classes (`DefaultTellapicNodeActionButton` ,`DefaultTellapicNodeActionCheckBox`,`DefaultTellapicNodeActionColor`,  `DefaultTellapicNodeActionCombo`,  `DefaultTellapicNodeActionLabel`) suits your needs. Take note that interaction with the model is made by the abstract class. You could override as needed or create your custom implementation directly from `TellapicNodeAction`, but you will miss most of the trick.
 
   * Create the renderer if needed. Renderers should implement `TellapicTableCellRenderer` (_I'll remove that constraint in a near future. The fact is that the interface extends_ `TableCellRenderer` _and provides_ `configureRenderer()` _method called inside_ `TellapicTreeTable` _with the correct action node_).
 
