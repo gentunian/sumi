@@ -1,8 +1,15 @@
+/**
+ * 
+ */
 package ar.com.tellapic.sumi.test;
 
-import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
 
-import ar.com.tellapic.sumi.treetable.DefaultAbstractTellapicNodeAction;
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
+
+import ar.com.tellapic.sumi.treetable.TellapicNode;
+import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -21,20 +28,21 @@ import ar.com.tellapic.sumi.treetable.DefaultAbstractTellapicNodeAction;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class DualImageNodeAction extends DefaultAbstractTellapicNodeAction {
+public class SomeSwingAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * @param action The action that will be triggered.
-     */
-    public DualImageNodeAction(AbstractAction action) {
-        super(action, "TickButtonEditor", "DualImageRenderer", true);
+    public SomeSwingAction() {
+        putValue(AbstractAction.NAME, "SomeSwingAction");
     }
-
+    
     /* (non-Javadoc)
-     * @see ar.com.tellapic.sumi.treetable.TellapicNodeAction#getData()
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     @Override
-    public Object getData() {
-        return new String[] {"/icons/Warning.png", "/icons/ok.png"};
+    public void actionPerformed(ActionEvent e) {
+        TellapicNodeAction action = (TellapicNodeAction) e.getSource();
+        TellapicNode node = action.getNode();
+        JOptionPane.showMessageDialog(null, "ActionPerformed for node: "+node);
     }
+
 }

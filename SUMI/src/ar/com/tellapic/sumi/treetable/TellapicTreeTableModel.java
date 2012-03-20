@@ -3,6 +3,9 @@
  */
 package ar.com.tellapic.sumi.treetable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.table.TableColumnModel;
 
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -109,10 +112,12 @@ public class TellapicTreeTableModel extends DefaultTreeTableModel {
 //		node.addGumiNodeAddActionListener(nodeChangeListener);
 //	}
 
-	/*
-	 * 
+	/**
+	 * Gets the TellapicNode wrapped around a GumiUser object.
+	 * @param user the user for which we want the desired node
+	 * @return the node wrapped around user if found or null if user is not managed by this model.
 	 */
-	protected TellapicNode getNodeForUser(GumiUser user) {
+	public TellapicNode getNodeForUser(GumiUser user) {
 		boolean found = false;
 		TellapicNode root = (TellapicNode) getRoot();
 		int count = root.getChildCount();
@@ -128,6 +133,32 @@ public class TellapicTreeTableModel extends DefaultTreeTableModel {
 			return null;
 
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<TellapicNode> getSelectedNodes() {
+	    return getSelectedNodesForParent((TellapicNode) getRoot());
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 * @return
+	 */
+	public List<TellapicNode> getSelectedNodesForParent(TellapicNode parent) {
+	    List<TellapicNode> selectedNodes = new ArrayList<TellapicNode>();
+	    
+	    for(int i = 0; i < parent.getChildCount(); i++) {
+	        TellapicNode child = (TellapicNode) parent.getChildAt(i);
+	        selectedNodes.addAll(getSelectedNodesForParent(child));
+	        if (child.isSelected())
+	            selectedNodes.add(child);
+	    }
+	    return selectedNodes;
+	}
+	
 	
 	/**
 	 * 

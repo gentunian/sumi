@@ -6,12 +6,10 @@ package ar.com.tellapic.sumi.test;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 
 import ar.com.tellapic.sumi.GumiUser;
 import ar.com.tellapic.sumi.GumiUserManager;
 import ar.com.tellapic.sumi.treetable.TellapicNode;
-
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -30,27 +28,25 @@ import ar.com.tellapic.sumi.treetable.TellapicNode;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class DeleteNodeAction extends AbstractAction {
-	private static final long serialVersionUID = 1L;
-	private GumiUserManager model;
-	
-	/**
-	 * @param model 
-	 * @param tree
-	 */
-	public DeleteNodeAction(GumiUserManager model) {
-		super("Delete User" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/minus-button.png")));
-		putValue(SHORT_DESCRIPTION, "Deletes the selected user.");
-		this.model = model;
-	}
+public class AddUserDataAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+    private GumiUserManager model;
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	    for(TellapicNode node : model.getSelectedNodes())
-	        model.delUser((GumiUser) node.getUserObject());
-	}
+    /**
+     * @param model
+     */
+    public AddUserDataAction(GumiUserManager model) {
+        this.model = model;
+    }
+
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        for(TellapicNode node : model.getSelectedNodes()) {
+            GumiUser user = (GumiUser) node.getUserObject();
+            
+        }
+    }
 }
-

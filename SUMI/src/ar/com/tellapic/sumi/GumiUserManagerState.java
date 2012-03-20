@@ -41,9 +41,17 @@ public interface GumiUserManagerState {
 	public GumiUser                      getUser(int id);
 	
 	/**
+	 * 
+	 * @param remoteUser
+	 * @return
+	 */
+	public List<GumiUser>            getUsers(boolean remoteUser);
+
+	/**
 	 * Get the list of users.
 	 * 
 	 * @return the list of users.
 	 */
 	public List<GumiUser>           getUsers();
+	
 }

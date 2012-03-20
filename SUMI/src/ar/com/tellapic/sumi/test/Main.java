@@ -5,9 +5,6 @@ package ar.com.tellapic.sumi.test;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
@@ -49,93 +46,94 @@ import ar.com.tellapic.sumi.treetable.editor.DefaultTellapicComboBoxCellEditor;
  *
  */
 public class Main {
-	
-	/**
-	 * 
-	 */
-	public static void setLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (UnsupportedLookAndFeelException e) {
-			//fallback
-		} catch (ClassNotFoundException e) {
-			//fallback
-		} catch (InstantiationException e) {
-			//fallback
-		} catch (IllegalAccessException e) {
-			//fallback
-		}
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		setLookAndFeel();
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				JFrame frame = new JFrame("SUMI");
-				final TellapicTreeTable tree = new TellapicTreeTable();
-				tree.setFillsViewportHeight(true);
-				tree.registerRendererComponent(TellapicTreeTable.DEFAULT_COLOR_RENDERER_KEY, new NodeActionColorRenderer(true));
-				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_COLOR_EDITOR_KEY, new DefaultTellapicColorCellEditor());
-				tree.registerRendererComponent(TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, new NodeActionCheckBoxRenderer());
-				tree.registerRendererComponent(TellapicTreeTable.DEFAULT_LABEL_RENDERER_KEY,  new NodeActionLabelRenderer());
-				tree.registerRendererComponent(TellapicTreeTable.DEFAULT_COMBO_RENDERER_KEY, new NodeActionComboRenderer());
-				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_TEXTFIELD_EDITOR_KEY, new DefaultCellEditor(new JTextField()));
-				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY,  new DefaultTellapicCheckBoxCellEditor());
-				tree.registerEditorComponent(TellapicTreeTable.DEFAULT_COMBO_EDITOR_KEY,  new DefaultTellapicComboBoxCellEditor());
-				
-				
-				tree.registerRendererComponent("DualImageRenderer", new DualImageRenderer(true));
-				tree.registerRendererComponent("ItemsRenderer", new ItemsRenderer());
-				tree.registerRendererComponent("OrderIssuedRenderer", new OrderIssuedRenderer());
-				tree.registerEditorComponent("ItemsListEditor", new ItemsListEditor());
-				tree.addMouseWheelListener(new MouseWheelListener(){
 
-					@Override
-					public void mouseWheelMoved(MouseWheelEvent e) {
-						Point p = e.getPoint();
-						boolean v = tree.editCellAt(tree.rowAtPoint(p), tree.columnAtPoint(p));
-						System.out.println("v: "+v);
-						
-					}
-				});
-				tree.setRowHeight(90);
-				JToolBar toolbar = new JToolBar();
-				TellapicTreeTableModel model = new GumiUserManager();
-				tree.setTreeTableModel(model);
-				frame.add(toolbar, BorderLayout.NORTH);
-//				toolbar.add(new InsertUserAction((GumiUserManager) model));
-//				toolbar.add(new DeleteNodeAction());
-//				toolbar.addSeparator();
-				JToggleButton expandCollapse = new JToggleButton();
-				expandCollapse.setAction(new ExpandTreeAction(tree));
-				expandCollapse.setHideActionText(true);
-				expandCollapse.setIcon(new ImageIcon(Main.class.getResource("/icons/eye--minus.png")));
-				toolbar.add(expandCollapse);
-				JToggleButton gridToggle = new JToggleButton();
-				gridToggle.setAction(new ToggleGridAction(tree));
-				gridToggle.setHideActionText(true);
-				gridToggle.setSelected(false);
-				toolbar.add(gridToggle);
-				JToggleButton headersToggle = new JToggleButton();
-				headersToggle.setAction(new ToggleHeadersAction(tree));
-				headersToggle.setHideActionText(true);
-				headersToggle.setSelected(true);
-				toolbar.add(headersToggle);
-				toolbar.addSeparator();
-				toolbar.add(new TestCaseAction((GumiUserManager) model));
-				toolbar.addSeparator();
-				toolbar.add(new TableImportXml((GumiUserManager) model));
-				toolbar.add(new TableExportXml((GumiUserManager) model));
-				frame.setPreferredSize(new Dimension(800,600));
-				frame.pack();
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.add(new JScrollPane(tree));
-				frame.setVisible(true);
-				//model.insertNodeInto(new GumiNode(new String("asdf")), (GumiNode) model.getRoot(), 0);
-			}
-		});
-	}
+    /**
+     * 
+     */
+    public static void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException e) {
+            //fallback
+        } catch (ClassNotFoundException e) {
+            //fallback
+        } catch (InstantiationException e) {
+            //fallback
+        } catch (IllegalAccessException e) {
+            //fallback
+        }
+    }
+
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        setLookAndFeel();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JFrame frame = new JFrame("SUMI");
+                final TellapicTreeTable tree = new TellapicTreeTable();
+                tree.setFillsViewportHeight(true);
+                tree.registerRendererComponent(TellapicTreeTable.DEFAULT_COLOR_RENDERER_KEY, new NodeActionColorRenderer(true));
+                tree.registerEditorComponent(TellapicTreeTable.DEFAULT_COLOR_EDITOR_KEY, new DefaultTellapicColorCellEditor());
+                tree.registerRendererComponent(TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, new NodeActionCheckBoxRenderer());
+                tree.registerRendererComponent(TellapicTreeTable.DEFAULT_LABEL_RENDERER_KEY,  new NodeActionLabelRenderer());
+                tree.registerRendererComponent(TellapicTreeTable.DEFAULT_COMBO_RENDERER_KEY, new NodeActionComboRenderer());
+                tree.registerEditorComponent(TellapicTreeTable.DEFAULT_TEXTFIELD_EDITOR_KEY, new DefaultCellEditor(new JTextField()));
+                tree.registerEditorComponent(TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY,  new DefaultTellapicCheckBoxCellEditor());
+                tree.registerEditorComponent(TellapicTreeTable.DEFAULT_COMBO_EDITOR_KEY,  new DefaultTellapicComboBoxCellEditor());
+                tree.setRowHeight(90);
+                tree.registerRendererComponent("DualImageRenderer", new DualImageRenderer(true));
+                tree.registerRendererComponent("ItemsRenderer", new ItemsRenderer());
+                tree.registerRendererComponent("OrderIssuedRenderer", new OrderIssuedRenderer());
+                tree.registerEditorComponent("ItemsListEditor", new ItemsListEditor());
+                tree.registerEditorComponent("TickButtonEditor", new TickButtonEditor());
+                //				tree.addMouseWheelListener(new MouseWheelListener(){
+                //					
+                //					@Override
+                //					public void mouseWheelMoved(MouseWheelEvent e) {
+                //						Point p = e.getPoint();
+                //						boolean v = tree.editCellAt(tree.rowAtPoint(p), tree.columnAtPoint(p));
+                //					}
+                //				});
+                //				
+                JToolBar toolbar = new JToolBar();
+                TellapicTreeTableModel model = new GumiUserManager();
+                tree.setTreeTableModel(model);
+
+                frame.add(toolbar, BorderLayout.NORTH);
+                toolbar.add(new InsertUserAction((GumiUserManager) model));
+                toolbar.add(new DeleteNodeAction((GumiUserManager) model));
+                toolbar.addSeparator();
+                JToggleButton expandCollapse = new JToggleButton();
+                expandCollapse.setAction(new ExpandTreeAction(tree));
+                expandCollapse.setHideActionText(true);
+                expandCollapse.setIcon(new ImageIcon(Main.class.getResource("/icons/eye--minus.png")));
+                toolbar.add(expandCollapse);
+                JToggleButton gridToggle = new JToggleButton();
+                gridToggle.setAction(new ToggleGridAction(tree));
+                gridToggle.setHideActionText(true);
+                gridToggle.setSelected(false);
+                toolbar.add(gridToggle);
+                JToggleButton headersToggle = new JToggleButton();
+                headersToggle.setAction(new ToggleHeadersAction(tree));
+                headersToggle.setHideActionText(true);
+                headersToggle.setSelected(true);
+                toolbar.add(headersToggle);
+                toolbar.addSeparator();
+                toolbar.add(new TestCaseAction((GumiUserManager) model));
+                toolbar.addSeparator();
+                toolbar.add(new TableImportXml((GumiUserManager) model));
+                toolbar.add(new TableExportXml((GumiUserManager) model));
+                toolbar.addSeparator();
+                toolbar.add(new AddUserDataAction((GumiUserManager) model));
+                frame.setPreferredSize(new Dimension(800,600));
+                frame.pack();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.add(new JScrollPane(tree));
+                frame.setVisible(true);
+                //model.insertNodeInto(new GumiNode(new String("asdf")), (GumiNode) model.getRoot(), 0);
+            }
+        });
+    }
 }

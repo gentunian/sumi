@@ -31,9 +31,10 @@ import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
  */
 public class TellapicNode extends AbstractMutableTreeTableNode {
 
-	private List<TellapicNodeAction>        actions;
+	private List<TellapicNodeAction>    actions;
 	private EventListenerList           listenerList;
 	private Icon                        icon;
+	private boolean                     selected;
 	
 	/* This list is used as a memory list for every new registered listener */
 	/* New listeners will have the posibility to receive each action event */
@@ -216,4 +217,19 @@ public class TellapicNode extends AbstractMutableTreeTableNode {
 		else
 			return getActionAt(column).getEditorKey();
 	}
+
+    /**
+     * @return the selected
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * @param selected the selected to set
+     */
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        System.out.println("Node "+this+" selected: "+selected);
+    }
 }

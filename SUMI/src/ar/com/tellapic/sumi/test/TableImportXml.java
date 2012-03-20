@@ -25,13 +25,13 @@ import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.SAXException;
 
 import ar.com.tellapic.sumi.GumiUser;
+import ar.com.tellapic.sumi.GumiUserManager;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionColor;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCombo;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionLabel;
 import ar.com.tellapic.sumi.treetable.TellapicNode;
 import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
-import ar.com.tellapic.sumi.treetable.TellapicTreeTableModel;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -56,13 +56,13 @@ public class TableImportXml extends AbstractAction {
 	
 	private Document dom;
 	private DocumentTraversal dt;
-	private TellapicTreeTableModel model;
+	private GumiUserManager model;
 	
 	/**
 	 * @param model 
 	 * 
 	 */
-	public TableImportXml(TellapicTreeTableModel model) {
+	public TableImportXml(GumiUserManager model) {
 		super("Import XML" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/table-import.png")));
 		putValue(AbstractAction.SHORT_DESCRIPTION, "Import table from XML file");
 		this.model = model;

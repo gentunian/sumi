@@ -58,4 +58,10 @@ public interface GumiUserManagerInterface {
 	 * @return true if the user is succcessfully removed, false otherwise.
 	 */
 	public boolean delUser(GumiUser user);
+	
+	/**
+	 * 
+	 * @param visible
+	 */
+	public void setRemoteUsersVisibility(boolean visible);
 }

@@ -70,6 +70,8 @@ public class TestCaseAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		List<GumiUser> users = createUsers(40);
 		model.addUser(users.get(0), createTest(3));
+		model.addUser(users.get(1), createTest(3));
+        
 //		for(int i = 0; i < users.size(); i++) {
 //			if (i < 10) {
 //				List<TellapicNodeAction> l = createLabelActions(1);
@@ -135,7 +137,7 @@ public class TestCaseAction extends AbstractAction {
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 		TellapicNodeAction a1 = new OrderIssuedNodeAction("", new String[]{"SO-123","12/12/12"}, false);
 		TellapicNodeAction a2 = new ItemsNodeAction("", new String[]{"item1","item2","item3"}, false);
-		TellapicNodeAction a3 = new DualImageNodeAction();
+		TellapicNodeAction a3 = new DualImageNodeAction(new SomeSwingAction());
 		actions.add(a1);
 		actions.add(a2);
 		actions.add(a3);

@@ -28,6 +28,7 @@ public abstract class AbstractTellapicCellEditor extends AbstractCellEditor {
 
 	private static final long serialVersionUID = 1L;
 	
+	//TODO: Change visibility
 	protected TellapicNodeAction action;
 	
 	/*
@@ -39,5 +40,13 @@ public abstract class AbstractTellapicCellEditor extends AbstractCellEditor {
 		if (action != null)
 			action.performAction();
 		return super.stopCellEditing();
+	}
+	
+	public void setTellapicNodeAction(TellapicNodeAction action) {
+	    this.action = action;
+	}
+	
+	public TellapicNodeAction getTellapicNodeAction() {
+	    return action;
 	}
 }
