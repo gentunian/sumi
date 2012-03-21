@@ -1,5 +1,5 @@
+#summary Minimal explanation about SUMI
 #labels Featured
-#Minimal explanation about SUMI
 
 = What role `TellapicNodeAction` objects should play? =
 
