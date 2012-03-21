@@ -329,3 +329,6 @@ model.insertNodeInto(node, insertNodeAt, insertAtNode.getChildCount());
 [http://i.imgur.com/QkmGu.png This is how it should look in a complete example.]
 
 http://i.imgur.com/QkmGu.png
+
+However, this example is not complete for a self-running test. You could check/browse the code inside the `test` package.
+<g:plusone size="medium"></g:plusone>
