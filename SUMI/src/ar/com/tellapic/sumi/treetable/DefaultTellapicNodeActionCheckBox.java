@@ -25,39 +25,44 @@ import javax.swing.AbstractAction;
  *
  */
 public class DefaultTellapicNodeActionCheckBox extends DefaultAbstractTellapicNodeAction {
-	
-	/**
-	 * 
-	 * @param node
-	 * @param action
-	 */
-	public DefaultTellapicNodeActionCheckBox(TellapicNode node, AbstractAction action) {
-		super(node, action, TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY, TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, true);
-		setValue(true);
-	}
-	
-	/**
-	 * 
-	 * @param action
-	 */
-	public DefaultTellapicNodeActionCheckBox(AbstractAction action) {
-		this(null, action);
-	}
-	
-	/**
-	 * 
-	 */
-	public DefaultTellapicNodeActionCheckBox(String name) {
-		super(name, TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY, TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, true);
-		setValue(true);
-	}
 
-	/* (non-Javadoc)
-	 * @see ar.com.tellapic.gumi.treetable.TellapicNodeAction#getData()
-	 */
-	@Override
-	public Object getData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+    public DefaultTellapicNodeActionCheckBox(String name, boolean editable) {
+        super(name, TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY, TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, editable);
+        setValue(true);
+    }
+    /**
+     * 
+     * @param node
+     * @param action
+     */
+    public DefaultTellapicNodeActionCheckBox(TellapicNode node, AbstractAction action) {
+        super(node, action, TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY, TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, true);
+        setValue(true);
+    }
+
+    /**
+     * Creates an editable action by default with action {code}action{/code}.
+     * @param action
+     */
+    public DefaultTellapicNodeActionCheckBox(AbstractAction action) {
+        this(null, action);
+    }
+
+    /**
+     * Creates an editable action by default with name {code}name{/code}.
+     * @param name
+     */
+    public DefaultTellapicNodeActionCheckBox(String name) {
+        this(name, true);
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.gumi.treetable.TellapicNodeAction#getData()
+     */
+    @Override
+    public Object getData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

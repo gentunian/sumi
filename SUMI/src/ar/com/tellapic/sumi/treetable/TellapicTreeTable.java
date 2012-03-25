@@ -72,6 +72,7 @@ public class TellapicTreeTable extends JXTreeTable implements TreeSelectionListe
         getTableHeader().setReorderingAllowed(false);
         setAutoCreateColumnsFromModel(true);
         setTreeCellRenderer(new TellapicHierarchicalCellRenderer());
+        
         renderersMap = new HashMap<String, TellapicTableCellRenderer>();
         editorsMap   = new HashMap<String, TableCellEditor>();
 

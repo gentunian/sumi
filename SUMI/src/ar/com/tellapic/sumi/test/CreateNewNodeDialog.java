@@ -42,7 +42,6 @@ import javax.swing.border.EmptyBorder;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
-
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -99,7 +98,6 @@ public class CreateNewNodeDialog extends JDialog {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		Main.setLookAndFeel();
 		try {
 			CreateNewNodeDialog dialog = new CreateNewNodeDialog(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

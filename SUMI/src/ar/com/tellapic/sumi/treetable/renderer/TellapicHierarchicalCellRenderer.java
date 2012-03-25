@@ -6,9 +6,8 @@ package ar.com.tellapic.sumi.treetable.renderer;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.JLabel;
 import javax.swing.JTree;
-import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
 import ar.com.tellapic.sumi.treetable.TellapicNode;
@@ -30,46 +29,44 @@ import ar.com.tellapic.sumi.treetable.TellapicNode;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class TellapicHierarchicalCellRenderer extends JLabel implements TreeCellRenderer {
+public class TellapicHierarchicalCellRenderer extends DefaultTreeCellRenderer {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	public  TellapicHierarchicalCellRenderer() {
-		super();
-		setMinimumSize(new Dimension(9999,999));
-		setMaximumSize(new Dimension(9999,999));
-		setPreferredSize(new Dimension(9999,999));
-	}
-	
-	/* (non-Javadoc)
-	 * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
-	 */
-	@Override
-	public Component getTreeCellRendererComponent(JTree tree,
-			Object value,
-			boolean selected,
-			boolean expanded,
-			boolean leaf,
-			int row,
-			boolean hasFocus) {
+    public  TellapicHierarchicalCellRenderer() {
+        super();
+        setMinimumSize(new Dimension(9999,999));
+        setMaximumSize(new Dimension(9999,999));
+        setPreferredSize(new Dimension(9999,999));
+    }
 
-		TreePath treePath = tree.getPathForRow(row);
-		if (treePath != null) {
-			TellapicNode node = (TellapicNode) treePath.getLastPathComponent();
-			setIcon(node.getIcon());
-			setText(node.getUserObject().toString());
-			setToolTipText(getText());
-		}
-		if (selected) {
-			//setBackground(tree.getSelectionBackground());
-			//setForeground(tree.getSelectionForeground());
-		} else {
-			setBackground(tree.getBackground());
-			setForeground(tree.getForeground());
-		}
-		return this;
-	}
+    /* (non-Javadoc)
+     * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
+     */
+    @Override
+    public Component getTreeCellRendererComponent(JTree tree,
+            Object value,
+            boolean selected,
+            boolean expanded,
+            boolean leaf,
+            int row,
+            boolean hasFocus) {
+
+        TreePath treePath = tree.getPathForRow(row);
+        if (treePath != null) {
+            TellapicNode node = (TellapicNode) treePath.getLastPathComponent();
+            setToolTipText(node.getTooltipText());
+            if (leaf) {
+                setLeafIcon(node.getIcon());
+            } else if (expanded) {
+                setOpenIcon(node.getIcon());
+            } else {
+                setClosedIcon(node.getIcon());
+            }
+        }
+        return super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+    }
 }

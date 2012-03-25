@@ -43,5 +43,7 @@ public class NodeActionCheckBoxRenderer extends TellapicAbstractCheckBoxRenderer
 	@Override
 	public void configureRenderer(TellapicNodeAction action, JTable table, boolean isSelected) {
 		setText(action.getNodeActionName());
+		setEnabled(action.isEditable());
+		
 	}
 }

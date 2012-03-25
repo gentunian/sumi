@@ -28,13 +28,13 @@ import javax.swing.table.TableCellEditor;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class DefaultTellapicButtonEditor extends AbstractTellapicCellEditor implements TableCellEditor {
+public class DefaultTellapicButtonCellEditor extends AbstractTellapicCellEditor implements TableCellEditor {
 
     private static final long serialVersionUID = 1L;
 
     protected JButton editor;
     
-    public DefaultTellapicButtonEditor() {
+    public DefaultTellapicButtonCellEditor() {
         editor = new JButton();
         editor.setOpaque(true);
         editor.addActionListener(new ActionListener(){

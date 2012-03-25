@@ -22,7 +22,7 @@ import java.util.List;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface GumiUserManagerState {
+public interface SumiUserManagerState {
 
 	/**
 	 * Retrieves an user.
@@ -30,7 +30,7 @@ public interface GumiUserManagerState {
 	 * @param userName The user name of the user to be retrieved.
 	 * @return The user with name userName or null if no such user exists.
 	 */
-	public GumiUser                      getUser(String userName);
+	public SumiUser getUser(String userName);
 	
 	/**
 	 * Retrieves an user.
@@ -38,20 +38,20 @@ public interface GumiUserManagerState {
 	 * @param id The user id of the user to be retrieved.
 	 * @returnThe user with id or null if no such user exists.
 	 */
-	public GumiUser                      getUser(int id);
+	public SumiUser getUser(int id);
 	
 	/**
 	 * 
 	 * @param remoteUser
 	 * @return
 	 */
-	public List<GumiUser>            getUsers(boolean remoteUser);
+	public List<SumiUser> getUsers(boolean remoteUser);
 
 	/**
 	 * Get the list of users.
 	 * 
 	 * @return the list of users.
 	 */
-	public List<GumiUser>           getUsers();
+	public List<SumiUser> getUsers();
 	
 }

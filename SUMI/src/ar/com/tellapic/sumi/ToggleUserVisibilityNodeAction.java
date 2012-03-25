@@ -28,55 +28,61 @@ import ar.com.tellapic.sumi.treetable.TellapicTreeTable;
  */
 public class ToggleUserVisibilityNodeAction extends DefaultAbstractTellapicNodeAction {
 
-	
-	/**
-	 * @param node
-	 * @param action
-	 */
-	public ToggleUserVisibilityNodeAction(TellapicNode node, AbstractAction action) {
-		super(node, action, TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY, TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, true);
-	}
-	
-	/**
-	 * 
-	 * @param action
-	 */
-	public ToggleUserVisibilityNodeAction(AbstractAction action) {
-		this(null, action);
-	}
+    /**
+     * 
+     */
+    public ToggleUserVisibilityNodeAction() {
+        this(null, null);
+    }
 
-	/* (non-Javadoc)
-	 * @see ar.com.tellapic.gumi.TellapicNodeAction#setValue(java.lang.Object)
-	 */
-	@Override
-	public void setValue(Object value) {
-		System.out.println(ToggleUserVisibilityNodeAction.class.getSimpleName()+" set value "+value);
-		GumiUser user = (GumiUser) node.getUserObject();
-		user.setVisible((Boolean) value);
-	}
+    /**
+     * @param node
+     * @param action
+     */
+    public ToggleUserVisibilityNodeAction(TellapicNode node, AbstractAction action) {
+        super(node, action, TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY, TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, true);
+    }
 
-	/* (non-Javadoc)
-	 * @see ar.com.tellapic.gumi.TellapicNodeAction#getValue()
-	 */
-	@Override
-	public Object getValue() {
-		GumiUser user = (GumiUser) node.getUserObject();
-		return user.isVisible();
-	}
+    /**
+     * 
+     * @param action
+     */
+    public ToggleUserVisibilityNodeAction(AbstractAction action) {
+        this(null, action);
+    }
 
-	/* (non-Javadoc)
-	 * @see ar.com.tellapic.gumi.treetable.TellapicNodeAction#getData()
-	 */
-	@Override
-	public Object getData() {
-		return node.getUserObject();
-	}
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.gumi.TellapicNodeAction#setValue(java.lang.Object)
+     */
+    @Override
+    public void setValue(Object value) {
+        System.out.println(ToggleUserVisibilityNodeAction.class.getSimpleName()+" set value "+value);
+        SumiUser user = (SumiUser) node.getParent().getUserObject();
+        user.setVisible((Boolean) value);
+    }
 
-	/* (non-Javadoc)
-	 * @see ar.com.tellapic.gumi.treetable.TellapicNodeAction#isEditable()
-	 */
-	@Override
-	public boolean isEditable() {
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.gumi.TellapicNodeAction#getValue()
+     */
+    @Override
+    public Object getValue() {
+        SumiUser user = (SumiUser) node.getParent().getUserObject();
+        return user.isVisible();
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.gumi.treetable.TellapicNodeAction#getData()
+     */
+    @Override
+    public Object getData() {
+        return node.getUserObject();
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.gumi.treetable.TellapicNodeAction#isEditable()
+     */
+    @Override
+    public boolean isEditable() {
+        return true;
+    }
 }

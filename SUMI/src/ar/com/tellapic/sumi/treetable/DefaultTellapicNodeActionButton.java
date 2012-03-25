@@ -24,23 +24,32 @@ import javax.swing.AbstractAction;
  *         sebastian.treu(at)gmail.com
  *
  */
-public abstract class DefaultTellapicNodeActionButton extends DefaultAbstractTellapicNodeAction {
+public class DefaultTellapicNodeActionButton extends DefaultAbstractTellapicNodeAction {
 
-	/**
-	 * 
-	 * @param node
-	 * @param action
-	 */
-	public DefaultTellapicNodeActionButton(TellapicNode node, AbstractAction action) {
-		super(node, action, TellapicTreeTable.DEFAULT_BUTTON_EDITOR_KEY, TellapicTreeTable.DEFAULT_BUTTON_RENDERER_KEY, true);
-	}
-	
-	/**
-	 * 
-	 * @param node
-	 * @param action
-	 */
-	public DefaultTellapicNodeActionButton(AbstractAction action) {
-		this(null, action);
-	}
+    /**
+     * 
+     * @param node
+     * @param action
+     */
+    public DefaultTellapicNodeActionButton(TellapicNode node, AbstractAction action) {
+        super(node, action, TellapicTreeTable.DEFAULT_BUTTON_EDITOR_KEY, TellapicTreeTable.DEFAULT_BUTTON_RENDERER_KEY, true);
+        setValue("pimba");
+    }
+
+    /**
+     * 
+     * @param node
+     * @param action
+     */
+    public DefaultTellapicNodeActionButton(AbstractAction action) {
+        this(null, action);
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.TellapicNodeAction#getData()
+     */
+    @Override
+    public Object getData() {
+        return null;
+    }
 }

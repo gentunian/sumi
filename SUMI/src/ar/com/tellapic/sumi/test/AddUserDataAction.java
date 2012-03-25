@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import ar.com.tellapic.sumi.GumiUser;
-import ar.com.tellapic.sumi.GumiUserManager;
+import ar.com.tellapic.sumi.SumiUser;
+import ar.com.tellapic.sumi.SumiUserManager;
 import ar.com.tellapic.sumi.treetable.TellapicNode;
 
 /**
@@ -30,12 +30,12 @@ import ar.com.tellapic.sumi.treetable.TellapicNode;
  */
 public class AddUserDataAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
-    private GumiUserManager model;
+    private SumiUserManager model;
 
     /**
      * @param model
      */
-    public AddUserDataAction(GumiUserManager model) {
+    public AddUserDataAction(SumiUserManager model) {
         this.model = model;
     }
 
@@ -45,7 +45,7 @@ public class AddUserDataAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         for(TellapicNode node : model.getSelectedNodes()) {
-            GumiUser user = (GumiUser) node.getUserObject();
+            SumiUser user = (SumiUser) node.getUserObject();
             
         }
     }

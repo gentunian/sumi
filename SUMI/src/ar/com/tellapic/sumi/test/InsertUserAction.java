@@ -11,8 +11,8 @@ import java.util.Map.Entry;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import ar.com.tellapic.sumi.GumiUser;
-import ar.com.tellapic.sumi.GumiUserManager;
+import ar.com.tellapic.sumi.SumiUserManager;
+import ar.com.tellapic.sumi.SystemSumiUser;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCombo;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionLabel;
@@ -39,13 +39,13 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
 public class InsertUserAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1L;
-	private GumiUserManager userManager;
+	private SumiUserManager userManager;
 
 	
 	/**
 	 * @param tree
 	 */
-	public InsertUserAction(GumiUserManager userManager) {
+	public InsertUserAction(SumiUserManager userManager) {
 		super("Add User" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/plus-button.png")));
 		putValue(SHORT_DESCRIPTION, "Adds a new user.");
 		this.userManager = userManager;
@@ -66,11 +66,12 @@ public class InsertUserAction extends AbstractAction {
  	}
 	
 	private void buildNode(DialogInfo data) {
-		GumiUser user = new GumiUser(0, data.getNodeName());
+//		SumiUser user = new SumiUser(0, data.getNodeName());
+	    SystemSumiUser user = new SystemSumiUser();
 
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 
-		/* Gets the column data (e.g. builds GumiNodeAction) */
+		/* Gets the column data (e.g. builds SumiNodeAction) */
 		for(Entry<String, String> map : data.getColumnData()) {
 			String key = map.getKey();
 			String value = map.getValue();

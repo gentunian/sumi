@@ -35,7 +35,25 @@ public abstract class DefaultAbstractTellapicNodeAction implements TellapicNodeA
     protected Object          value;
     protected String          name;
     protected boolean         editable;
+    private String            tooltipText;
+    
+    /**
+     * 
+     * @param eKey
+     * @param rKey
+     * @param editable
+     */
+    public DefaultAbstractTellapicNodeAction(String eKey, String rKey, boolean editable) {
+        if (eKey == null || rKey == null)
+            throw new IllegalArgumentException("eKey and rKey must not be null.");
 
+        this.editorKey = eKey;
+        this.rendererKey = rKey;
+        this.editable = editable;
+        this.name = "";
+        this.tooltipText = this.name;
+    }
+    
     /**
      * 
      * @param node
@@ -45,20 +63,15 @@ public abstract class DefaultAbstractTellapicNodeAction implements TellapicNodeA
      * @param editable
      */
     public DefaultAbstractTellapicNodeAction(TellapicNode node, AbstractAction action, String eKey, String rKey, boolean editable) {
-        if (eKey == null || rKey == null)
-            throw new IllegalArgumentException("eKey and rKey must not be null.");
-
-        this.name = "";
+        this(eKey, rKey, editable);
         if (action != null) {
             this.name = (String) action.getValue(AbstractAction.NAME);
             if (this.name == null)
                 throw new IllegalArgumentException("actions must have AbstractAction.NAME property set");
         }
         this.action= action;
-        this.editorKey = eKey;
-        this.rendererKey = rKey;
         this.node = node;
-        this.editable = editable;
+        this.tooltipText = this.name;
     }
 
     /**
@@ -80,18 +93,15 @@ public abstract class DefaultAbstractTellapicNodeAction implements TellapicNodeA
      * @param editable
      */
     public DefaultAbstractTellapicNodeAction(String name, String eKey, String rKey, boolean editable) {
+        this(eKey, rKey, editable);
         if (name == null)
             throw new IllegalArgumentException("name cannot be null.");
-
-        if (eKey == null || rKey == null)
-            throw new IllegalArgumentException("eKey and rKey must not be null.");
-
+        
         this.name = name;
-        this.editorKey = eKey;
-        this.rendererKey = rKey;
         this.node = null;
         this.action = null;
-        this.editable = editable;
+        this.tooltipText = this.name;
+
     }
 
     /**
@@ -176,5 +186,19 @@ public abstract class DefaultAbstractTellapicNodeAction implements TellapicNodeA
     @Override
     public boolean isEditable() {
         return editable;
+    }
+
+    /**
+     * @return the tooltipText
+     */
+    public String getToolTipText() {
+        return tooltipText;
+    }
+
+    /**
+     * @param tooltipText the tooltipText to set
+     */
+    public void setToolTipText(String tooltipText) {
+        this.tooltipText = tooltipText;
     }
 }

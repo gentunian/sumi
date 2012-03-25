@@ -9,8 +9,7 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
 
 
 /**
- *   Copyright (c) 2010 Sebastián Treu.
- *
+ *   Copyright (c) 2010 Sebastián Treu. *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; version 2 of the License.
@@ -25,7 +24,7 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface GumiUserManagerInterface {
+public interface SumiUserManagerInterface {
 	
 	/**
 	 * Adds an existing user to the users list. 
@@ -33,7 +32,7 @@ public interface GumiUserManagerInterface {
 	 * @param user the user to be added to the users list.
 	 * @return true if the user was succesfully added.
 	 */
-	public boolean addUser(GumiUser user, List<TellapicNodeAction> actions);
+	public boolean addUser(SumiUser user, List<TellapicNodeAction> actions);
 	
 	/**
 	 * Removes the user with the specified userName.
@@ -57,7 +56,7 @@ public interface GumiUserManagerInterface {
 	 * @param user the user to be removed from the users list.
 	 * @return true if the user is succcessfully removed, false otherwise.
 	 */
-	public boolean delUser(GumiUser user);
+	public boolean delUser(SumiUser user);
 	
 	/**
 	 * 

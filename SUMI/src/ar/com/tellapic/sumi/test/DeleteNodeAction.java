@@ -8,8 +8,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import ar.com.tellapic.sumi.GumiUser;
-import ar.com.tellapic.sumi.GumiUserManager;
+import ar.com.tellapic.sumi.SumiUser;
+import ar.com.tellapic.sumi.SumiUserManager;
 import ar.com.tellapic.sumi.treetable.TellapicNode;
 
 
@@ -32,13 +32,13 @@ import ar.com.tellapic.sumi.treetable.TellapicNode;
  */
 public class DeleteNodeAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
-	private GumiUserManager model;
+	private SumiUserManager model;
 	
 	/**
 	 * @param model 
 	 * @param tree
 	 */
-	public DeleteNodeAction(GumiUserManager model) {
+	public DeleteNodeAction(SumiUserManager model) {
 		super("Delete User" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/minus-button.png")));
 		putValue(SHORT_DESCRIPTION, "Deletes the selected user.");
 		this.model = model;
@@ -50,7 +50,7 @@ public class DeleteNodeAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	    for(TellapicNode node : model.getSelectedNodes())
-	        model.delUser((GumiUser) node.getUserObject());
+	        model.delUser((SumiUser) node.getUserObject());
 	}
 }
 

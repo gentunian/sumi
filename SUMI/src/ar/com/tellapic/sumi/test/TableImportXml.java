@@ -24,8 +24,8 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.SAXException;
 
-import ar.com.tellapic.sumi.GumiUser;
-import ar.com.tellapic.sumi.GumiUserManager;
+import ar.com.tellapic.sumi.SumiUser;
+import ar.com.tellapic.sumi.SumiUserManager;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionColor;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCombo;
@@ -56,13 +56,13 @@ public class TableImportXml extends AbstractAction {
 	
 	private Document dom;
 	private DocumentTraversal dt;
-	private GumiUserManager model;
+	private SumiUserManager model;
 	
 	/**
 	 * @param model 
 	 * 
 	 */
-	public TableImportXml(GumiUserManager model) {
+	public TableImportXml(SumiUserManager model) {
 		super("Import XML" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/table-import.png")));
 		putValue(AbstractAction.SHORT_DESCRIPTION, "Import table from XML file");
 		this.model = model;
@@ -151,7 +151,7 @@ public class TableImportXml extends AbstractAction {
 		String name = element.getAttribute("name");
 		String iconPath = element.getAttribute("icon_src");
 		int id = Integer.parseInt(element.getAttribute("id"));
-		GumiUser user = new GumiUser(id, name);
+		SumiUser user = new SumiUser(id, name);
 		TellapicNode node = new TellapicNode(user, new ImageIcon(TableImportXml.class.getResource(iconPath)));
 		for(TellapicNodeAction action : actions)
 			node.addAction(action);

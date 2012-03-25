@@ -10,7 +10,7 @@ import javax.swing.table.TableColumnModel;
 
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
-import ar.com.tellapic.sumi.GumiUser;
+import ar.com.tellapic.sumi.SumiUser;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -108,22 +108,22 @@ public class TellapicTreeTableModel extends DefaultTreeTableModel {
 //	@Override
 //	public void insertNodeInto(MutableTreeTableNode newChild, MutableTreeTableNode parent, int index) {
 //		super.insertNodeInto(newChild, parent, index);
-//		GumiNode node = (GumiNode) parent;
-//		node.addGumiNodeAddActionListener(nodeChangeListener);
+//		SumiNode node = (SumiNode) parent;
+//		node.addSumiNodeAddActionListener(nodeChangeListener);
 //	}
 
 	/**
-	 * Gets the TellapicNode wrapped around a GumiUser object.
+	 * Gets the TellapicNode wrapped around a SumiUser object.
 	 * @param user the user for which we want the desired node
 	 * @return the node wrapped around user if found or null if user is not managed by this model.
 	 */
-	public TellapicNode getNodeForUser(GumiUser user) {
+	public TellapicNode getNodeForUser(SumiUser user) {
 		boolean found = false;
 		TellapicNode root = (TellapicNode) getRoot();
 		int count = root.getChildCount();
 		int i = 0;
 		for(i = 0; i < count && !found; i++) {
-			GumiUser cmpUser = (GumiUser) getValueAt(root.getChildAt(i), 0);
+			SumiUser cmpUser = (SumiUser) getValueAt(root.getChildAt(i), 0);
 			found = cmpUser.equals(user);
 			
 		}
@@ -164,7 +164,7 @@ public class TellapicTreeTableModel extends DefaultTreeTableModel {
 	 * 
 	 * @param l
 	 */
-	public void addGumiNodeAddActionListener(TellapicNodeAddActionListener l) {
+	public void addSumiNodeAddActionListener(TellapicNodeAddActionListener l) {
 		nodeChangeListener = l;
 	}
 }

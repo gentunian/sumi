@@ -34,24 +34,24 @@ import ar.com.tellapic.sumi.treetable.TellapicTreeTableModel;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class GumiUserManager extends TellapicTreeTableModel implements GumiUserManagerInterface, GumiUserManagerState, Observer {
+public class SumiUserManager extends TellapicTreeTableModel implements SumiUserManagerInterface, SumiUserManagerState, Observer {
 
     /* The users list */
-    private ArrayList<GumiUser> users;
+    private ArrayList<SumiUser> users;
 
     /**
      * Constructor: Creates an empty uses list.
      */
-    public GumiUserManager() {
+    public SumiUserManager() {
         super();
-        users = new ArrayList<GumiUser>();
+        users = new ArrayList<SumiUser>();
     }
 
     /**
      * 
      * @param user
      */
-    private void cleanRemovedUser(GumiUser user) {
+    private void cleanRemovedUser(SumiUser user) {
         System.out.println("Child count: "+getRoot().getChildCount());
         user.deleteObserver(this);
         TellapicNode removedNode = getNodeForUser(user);
@@ -64,17 +64,18 @@ public class GumiUserManager extends TellapicTreeTableModel implements GumiUserM
      * 
      * @param user
      */
-    private void arrangeAddedUser(GumiUser user, List<TellapicNodeAction> actions) {
+    private void arrangeAddedUser(SumiUser user, List<TellapicNodeAction> actions) {
         user.addObserver(this);
 
         /* Create the node that will wrap the object */
-        TellapicNode node = new TellapicNode(user, new ImageIcon(GumiUserManager.class.getResource("/icons/user.png")));
+//        TellapicNode node = new TellapicNode(user, new ImageIcon(SumiUserManager.class.getResource("/icons/user.png")));
+        TellapicNode node = user.getObjectRootNode();
         node.addTellapicNodeAddActionListener(nodeChangeListener);
 
-        /* As we know that we are adding a GumiUser, build the preferred actions... */
+        /* As we know that we are adding a SumiUser, build the preferred actions... */
         /* Should we put this code here? */
-        TellapicNodeAction visibilityAction = new DefaultTellapicNodeActionCheckBox(new ToggleVisibilityAction());
-        actions.add(visibilityAction);
+//        TellapicNodeAction visibilityAction = new DefaultTellapicNodeActionCheckBox(new ToggleVisibilityAction());
+//        actions.add(visibilityAction);
 
         if (actions != null)
             for(TellapicNodeAction nodeAction : actions)
@@ -88,10 +89,10 @@ public class GumiUserManager extends TellapicTreeTableModel implements GumiUserM
     
     /*
      * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.GumiUserManagerInterface#addUser(ar.com.tellapic.gumi.GumiUser, java.util.List)
+     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#addUser(ar.com.tellapic.gumi.SumiUser, java.util.List)
      */
     @Override
-    public boolean addUser(GumiUser user, List<TellapicNodeAction> actions) {
+    public boolean addUser(SumiUser user, List<TellapicNodeAction> actions) {
         boolean added = users.add(user);
 
         if (added)
@@ -102,32 +103,32 @@ public class GumiUserManager extends TellapicTreeTableModel implements GumiUserM
 
     /*
      * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.GumiUserManagerInterface#delUser(java.lang.String)
+     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#delUser(java.lang.String)
      */
     @Override
     public boolean delUser(String name) {
-        GumiUser user = getUser(name);
+        SumiUser user = getUser(name);
         
         return delUser(user);
     }
 
     /*
      * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.GumiUserManagerInterface#delUser(int)
+     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#delUser(int)
      */
     @Override
     public boolean delUser(int id) {
-        GumiUser user = getUser(id);
+        SumiUser user = getUser(id);
 
         return delUser(user);
     }
 
     /*
      * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.GumiUserManagerInterface#delUser(ar.com.tellapic.gumi.GumiUser)
+     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#delUser(ar.com.tellapic.gumi.SumiUser)
      */
     @Override
-    public boolean delUser(GumiUser user) {
+    public boolean delUser(SumiUser user) {
         boolean removed = users.remove(user);
         
         if (removed)
@@ -138,20 +139,20 @@ public class GumiUserManager extends TellapicTreeTableModel implements GumiUserM
 
     /*
      * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.GumiUserManagerState#getUsers()
+     * @see ar.com.tellapic.gumi.SumiUserManagerState#getUsers()
      */
     @Override
-    public List<GumiUser> getUsers() {
+    public List<SumiUser> getUsers() {
         return users;
     }
 
     /*
      * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.GumiUserManagerState#getUser(java.lang.String)
+     * @see ar.com.tellapic.gumi.SumiUserManagerState#getUser(java.lang.String)
      */
     @Override
-    public GumiUser getUser(String userName) {
-        GumiUser user  = null;
+    public SumiUser getUser(String userName) {
+        SumiUser user  = null;
         int i;
 
         for(i = 0; i < users.size() && !users.get(i).getName().equals(userName); i++);
@@ -164,11 +165,11 @@ public class GumiUserManager extends TellapicTreeTableModel implements GumiUserM
 
     /*
      * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.GumiUserManagerState#getUser(int)
+     * @see ar.com.tellapic.gumi.SumiUserManagerState#getUser(int)
      */
     @Override
-    public GumiUser getUser(int id) {
-        GumiUser user = null;
+    public SumiUser getUser(int id) {
+        SumiUser user = null;
         int i;
         for(i = 0; i < users.size() && users.get(i).getUserId() != id; i++);
 
@@ -187,24 +188,25 @@ public class GumiUserManager extends TellapicTreeTableModel implements GumiUserM
         @SuppressWarnings("unused")
         Object[] params = (Object[])arg;
         @SuppressWarnings("unused")
-        GumiUser user = (GumiUser) o;
+        SumiUser user = (SumiUser) o;
+        int userIndex = users.indexOf(user);
         //TODO: some work
     }
 
     /* (non-Javadoc)
-     * @see ar.com.tellapic.sumi.GumiUserManagerState#getUser(boolean)
+     * @see ar.com.tellapic.sumi.SumiUserManagerState#getUser(boolean)
      */
     @Override
-    public List<GumiUser> getUsers(boolean remoteUser) {
+    public List<SumiUser> getUsers(boolean remoteUser) {
         return users;
     }
 
     /* (non-Javadoc)
-     * @see ar.com.tellapic.sumi.GumiUserManagerInterface#setUserVisible(boolean, boolean)
+     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#setUserVisible(boolean, boolean)
      */
     @Override
     public void setRemoteUsersVisibility(boolean visible) {
-        for(GumiUser user : users)
+        for(SumiUser user : users)
             if (user.isRemote())
                 user.setVisible(visible);
     }
@@ -243,7 +245,7 @@ public class GumiUserManager extends TellapicTreeTableModel implements GumiUserM
         public void actionPerformed(ActionEvent e) {
             TellapicNodeAction action = (TellapicNodeAction) e.getSource();
             TellapicNode node = action.getNode();
-            GumiUser user = (GumiUser) node.getUserObject();
+            SumiUser user = (SumiUser) node.getUserObject();
             boolean oldValue = user.isVisible();
             user.setVisible(!oldValue);
         }

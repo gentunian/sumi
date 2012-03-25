@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import ar.com.tellapic.sumi.GumiUserManager;
+import ar.com.tellapic.sumi.SumiUserManager;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -34,7 +34,7 @@ public class TableExportXml extends AbstractAction {
 	 * @param model 
 	 * 
 	 */
-	public TableExportXml(GumiUserManager model) {
+	public TableExportXml(SumiUserManager model) {
 		super("Export XML" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/table-export.png")));
 		putValue(AbstractAction.SHORT_DESCRIPTION, "Export table to XML file");
 	}

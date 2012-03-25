@@ -11,8 +11,8 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import ar.com.tellapic.sumi.GumiUser;
-import ar.com.tellapic.sumi.GumiUserManager;
+import ar.com.tellapic.sumi.SumiUser;
+import ar.com.tellapic.sumi.SumiUserManager;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionColor;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCombo;
@@ -42,7 +42,7 @@ public class TestCaseAction extends AbstractAction {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private GumiUserManager model;
+	private SumiUserManager model;
 	private Color[] colorArray = new Color[] {
 			Color.red,
 			Color.blue,
@@ -58,7 +58,7 @@ public class TestCaseAction extends AbstractAction {
 	/**
 	 * 
 	 */
-	public TestCaseAction(GumiUserManager model) {
+	public TestCaseAction(SumiUserManager model) {
 		super("Test Case" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/flask.png")));
 		this.model = model;
 	}
@@ -68,7 +68,7 @@ public class TestCaseAction extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		List<GumiUser> users = createUsers(40);
+		List<SumiUser> users = createUsers(40);
 		model.addUser(users.get(0), createTest(3));
 		model.addUser(users.get(1), createTest(3));
         
@@ -88,10 +88,10 @@ public class TestCaseAction extends AbstractAction {
 //		}
 	}
 	
-	private List<GumiUser> createUsers(int howMany) {
-		List<GumiUser> list = new ArrayList<GumiUser>();
+	private List<SumiUser> createUsers(int howMany) {
+		List<SumiUser> list = new ArrayList<SumiUser>();
 		for(int i = 0; i < howMany; i++) {
-			GumiUser user = new GumiUser(0, "user"+i);
+			SumiUser user = new SumiUser(0, "user"+i);
 			list.add(user);
 		}
 		return list;

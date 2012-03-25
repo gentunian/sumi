@@ -17,7 +17,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import ar.com.tellapic.sumi.treetable.editor.DefaultTellapicButtonEditor;
+import ar.com.tellapic.sumi.treetable.editor.DefaultTellapicButtonCellEditor;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -36,7 +36,7 @@ import ar.com.tellapic.sumi.treetable.editor.DefaultTellapicButtonEditor;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class TickButtonEditor extends DefaultTellapicButtonEditor implements TableCellEditor {
+public class TickButtonEditor extends DefaultTellapicButtonCellEditor implements TableCellEditor {
     private static final long serialVersionUID = 1L;
     
     public TickButtonEditor() {
