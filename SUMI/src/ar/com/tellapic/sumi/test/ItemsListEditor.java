@@ -15,7 +15,6 @@ import ar.com.tellapic.sumi.treetable.TellapicNode;
 import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
 import ar.com.tellapic.sumi.treetable.TellapicTreeTable;
 import ar.com.tellapic.sumi.treetable.editor.AbstractTellapicCellEditor;
-import ar.com.tellapic.sumi.treetable.renderer.TellapicAbstractPanelRenderer;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.

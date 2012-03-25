@@ -652,7 +652,8 @@ public class CreateNewNodeDialog extends JDialog {
 			menu.add(buttonItem);
 			menu.show(source, 10, 10);
 			
-			int index = getComponentRowIndex(source);
+			@SuppressWarnings("unused")
+            int index = getComponentRowIndex(source);
 
 //			List<Component> list = componentsList.get(index);
 //			for(Component c : list) {

@@ -3,7 +3,6 @@
  */
 package ar.com.tellapic.sumi;
 
-import ar.com.tellapic.sumi.treetable.TellapicNode;
 import ar.com.tellapic.sumi.treetable.TellapicNodeActionEvent;
 import ar.com.tellapic.sumi.treetable.TellapicNodeAddActionListener;
 

@@ -97,7 +97,8 @@ public class TestCaseAction extends AbstractAction {
 		return list;
 	}
 	
-	private List<TellapicNodeAction> createLabelActions(int howMany) {
+	@SuppressWarnings("unused")
+    private List<TellapicNodeAction> createLabelActions(int howMany) {
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 		for(int i = 0; i < howMany; i++) {
 			TellapicNodeAction nodeAction = new DefaultTellapicNodeActionLabel("labelAction"+i, true);
@@ -105,7 +106,7 @@ public class TestCaseAction extends AbstractAction {
 		}
 		return actions;
 	}
-	
+	@SuppressWarnings("unused")
 	private List<TellapicNodeAction> createComboActions(int howMany) {
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 		for(int i = 0; i < howMany; i++) {
@@ -114,7 +115,7 @@ public class TestCaseAction extends AbstractAction {
 		}
 		return actions;
 	}
-	
+	@SuppressWarnings("unused")
 	private List<TellapicNodeAction> createCheckboxActions(int howMany) {
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 		for(int i = 0; i < howMany; i++) {
@@ -123,7 +124,7 @@ public class TestCaseAction extends AbstractAction {
 		}
 		return actions;
 	}
-	
+	@SuppressWarnings("unused")
 	private List<TellapicNodeAction> createColorActions(int howMany) {
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 		for(int i = 0; i < howMany; i++) {

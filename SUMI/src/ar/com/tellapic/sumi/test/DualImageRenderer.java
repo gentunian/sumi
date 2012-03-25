@@ -35,6 +35,8 @@ public class DualImageRenderer extends TellapicAbstractPanelRenderer {
     private static final long serialVersionUID = 1L;
     private JLabel labelImage;
     private JButton buttonImage;
+    
+    @SuppressWarnings("unused")
     private boolean vertical;
 
     /**

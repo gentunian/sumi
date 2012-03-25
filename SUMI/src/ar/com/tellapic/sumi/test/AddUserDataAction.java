@@ -45,6 +45,7 @@ public class AddUserDataAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         for(TellapicNode node : model.getSelectedNodes()) {
+            @SuppressWarnings("unused")
             SumiUser user = (SumiUser) node.getUserObject();
             
         }

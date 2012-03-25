@@ -10,9 +10,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 
-import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.TellapicNode;
 import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
 import ar.com.tellapic.sumi.treetable.TellapicTreeTableModel;
@@ -184,10 +182,9 @@ public class SumiUserManager extends TellapicTreeTableModel implements SumiUserM
      * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
     @Override
+    @SuppressWarnings("unused")
     public void update(Observable o, Object arg) {
-        @SuppressWarnings("unused")
         Object[] params = (Object[])arg;
-        @SuppressWarnings("unused")
         SumiUser user = (SumiUser) o;
         int userIndex = users.indexOf(user);
         //TODO: some work
@@ -230,6 +227,7 @@ public class SumiUserManager extends TellapicTreeTableModel implements SumiUserM
      *         sebastian.treu(at)gmail.com
      *
      */
+    @SuppressWarnings("unused")
     private class ToggleVisibilityAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
 
