@@ -1,9 +1,9 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi;
+package ar.com.tellapic.sumi.system;
 
-import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
+import ar.com.tellapic.sumi.system.linux.LinuxServices;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -22,10 +22,11 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface ProcessInfo extends TellapicNodeCreatorInterface {
+public class SystemServices {
 
-    public String getProcessName();
+    private static Services srv = new LinuxServices();
     
-    public int getProcessId();
-    
+    public static Services getServices() {
+        return srv;
+    }
 }

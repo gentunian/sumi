@@ -12,7 +12,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import ar.com.tellapic.sumi.SumiUserManager;
-import ar.com.tellapic.sumi.SystemSumiUser;
+import ar.com.tellapic.sumi.system.SumiSystemUser;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCombo;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionLabel;
@@ -67,7 +67,7 @@ public class InsertUserAction extends AbstractAction {
 	
 	private void buildNode(DialogInfo data) {
 //		SumiUser user = new SumiUser(0, data.getNodeName());
-	    SystemSumiUser user = new SystemSumiUser();
+	    SumiSystemUser user = new SumiSystemUser();
 
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 

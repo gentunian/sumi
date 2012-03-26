@@ -1,7 +1,11 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi;
+package ar.com.tellapic.sumi.system;
+
+import javax.swing.Icon;
+
+import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -20,21 +24,11 @@ package ar.com.tellapic.sumi;
  *         sebastian.treu(at)gmail.com
  *
  */
-public final class Services {
+public interface FileInfo extends TellapicNodeCreatorInterface {
 
-    private static UsersInfo usersInfo;
+    public Icon getIcon();
     
-    public Services() {
-        usersInfo = new LinuxUsersInfo();
-    }
+    public String getOwner();
     
-    public void setUserInfoInterface(UsersInfo uii) {
-        usersInfo = uii;
-    }
-    
-    public static UsersInfo getUsersInfo() {
-        if (usersInfo == null)
-            usersInfo = new LinuxUsersInfo();
-        return usersInfo;
-    }
+    public String getName();
 }

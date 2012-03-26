@@ -1,11 +1,12 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi;
+package ar.com.tellapic.sumi.system.linux;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import ar.com.tellapic.sumi.system.SocketInfo;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionLabel;
 import ar.com.tellapic.sumi.treetable.TellapicNode;
 

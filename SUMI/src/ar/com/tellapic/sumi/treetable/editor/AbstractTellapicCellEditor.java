@@ -26,27 +26,29 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
  */
 public abstract class AbstractTellapicCellEditor extends AbstractCellEditor {
 
-	private static final long serialVersionUID = 1L;
-	
-	//TODO: Change visibility
-	protected TellapicNodeAction action;
-	
-	/*
-	 * (non-Javadoc)
-	 * @see javax.swing.AbstractCellEditor#stopCellEditing()
-	 */
-	@Override
-	public boolean stopCellEditing() {
-		if (action != null)
-			action.performAction();
-		return super.stopCellEditing();
-	}
-	
-	public void setTellapicNodeAction(TellapicNodeAction action) {
-	    this.action = action;
-	}
-	
-	public TellapicNodeAction getTellapicNodeAction() {
-	    return action;
-	}
+    private static final long serialVersionUID = 1L;
+
+    //TODO: Change visibility
+    protected TellapicNodeAction action;
+
+    /*
+     * (non-Javadoc)
+     * @see javax.swing.AbstractCellEditor#stopCellEditing()
+     */
+    @Override
+    public boolean stopCellEditing() {
+        if (action != null)
+            action.performAction();
+        return super.stopCellEditing();
+    }
+
+    public void setTellapicNodeAction(TellapicNodeAction action) {
+        this.action = action;
+    }
+
+    public TellapicNodeAction getTellapicNodeAction() {
+        return action;
+    }
+    
+    
 }

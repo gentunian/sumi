@@ -1,14 +1,11 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi.treetable.renderer;
+package ar.com.tellapic.sumi.system;
 
-import java.awt.Component;
+import javax.swing.Icon;
 
-import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
-
-import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
+import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -27,14 +24,17 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface TellapicTableCellRenderer extends TableCellRenderer {
-	
-	/**
-	 * 
-	 * @param action
-	 */
-	public void configureRenderer(TellapicNodeAction action, JTable table, boolean isSelected);
-	
-	public void configureRenderer(Component component, TellapicNodeAction action, JTable table, boolean isSelected);
+public interface SocketInfo extends TellapicNodeCreatorInterface {
 
+    public String getType();
+    
+    public String getProcessName();
+    
+    public int getProcessId();
+    
+    public String getName();
+    
+    public String getProtocol();
+    
+    public Icon getIcon();
 }

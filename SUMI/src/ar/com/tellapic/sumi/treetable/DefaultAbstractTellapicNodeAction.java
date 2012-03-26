@@ -34,6 +34,7 @@ public abstract class DefaultAbstractTellapicNodeAction implements TellapicNodeA
     protected TellapicNode    node;
     protected Object          value;
     protected String          name;
+    protected String          description;
     protected boolean         editable;
     private String            tooltipText;
     

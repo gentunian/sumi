@@ -1,11 +1,12 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi;
+package ar.com.tellapic.sumi.system;
 
-import javax.swing.Icon;
+import java.util.ArrayList;
 
 import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
+
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -24,17 +25,17 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface SocketInfo extends TellapicNodeCreatorInterface {
+public interface SystemUserInfo extends TellapicNodeCreatorInterface {
 
-    public String getType();
+    public ArrayList<ProcessInfo> getProcesses();
     
-    public String getProcessName();
+    public String getUserName();
     
-    public int getProcessId();
+    public int getUserID();
     
-    public String getName();
+    public String getUserHomePath();
+
+    public int getGroupID();
     
-    public String getProtocol();
-    
-    public Icon getIcon();
+    public String[] getGroups();
 }

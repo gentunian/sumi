@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi.renderer;
+package ar.com.tellapic.sumi.treetable.renderer;
 
 import java.awt.Color;
 
@@ -11,8 +11,6 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 
 import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
-import ar.com.tellapic.sumi.treetable.renderer.TellapicAbstractRenderer;
-import ar.com.tellapic.sumi.treetable.renderer.TellapicTableCellRenderer;
 
 /**
  * This is an example taken from JAVA tutorials at:
@@ -53,39 +51,39 @@ import ar.com.tellapic.sumi.treetable.renderer.TellapicTableCellRenderer;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class NodeActionColorRenderer extends TellapicAbstractRenderer implements TellapicTableCellRenderer {
+public class DefaultTellapicColorRenderer extends AbstractTellapicRenderer {
 
-	Border unselectedBorder = null;
-	Border selectedBorder = null;
-	boolean isBordered = true;
+    Border unselectedBorder = null;
+    Border selectedBorder = null;
+    boolean isBordered = true;
 
-	public NodeActionColorRenderer(boolean isBordered) {
-		this.isBordered = isBordered;
-		component = new JLabel();
-		((JLabel)component).setOpaque(true); //MUST do this for background to show up.
-	}
+    public DefaultTellapicColorRenderer(boolean isBordered) {
+        this.isBordered = isBordered;
+        component = new JLabel();
+        ((JLabel)component).setOpaque(true);
+    }
 
-	/* (non-Javadoc)
-	 * @see ar.com.tellapic.gumi.renderer.TellapicTableCellRenderer#configureRenderer(ar.com.tellapic.gumi.treetable.TellapicNodeAction)
-	 */
-	@Override
-	public void configureRenderer(TellapicNodeAction action, JTable table, boolean isSelected) {
-		Color newColor = (Color)action.getData();
-		((JLabel)component).setBackground(newColor);
-		if (isBordered) {
-			if (isSelected) {
-				if (selectedBorder == null) {
-					selectedBorder = BorderFactory.createMatteBorder(2,5,2,5, table.getSelectionBackground());
-				}
-				((JLabel)component).setBorder(selectedBorder);
-			} else {
-				if (unselectedBorder == null) {
-					unselectedBorder = BorderFactory.createMatteBorder(2,5,2,5, table.getBackground());
-				}
-				((JLabel)component).setBorder(unselectedBorder);
-			}
-		}
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.gumi.renderer.TellapicTableCellRenderer#configureRenderer(ar.com.tellapic.gumi.treetable.TellapicNodeAction)
+     */
+    @Override
+    public void configureRenderer(TellapicNodeAction action, JTable table, Object value, boolean isSelected, boolean hasFocus) {
+        Color newColor = (Color)action.getData();
+        ((JLabel)component).setBackground(newColor);
+        if (isBordered) {
+            if (isSelected) {
+                if (selectedBorder == null) {
+                    selectedBorder = BorderFactory.createMatteBorder(2,5,2,5, table.getSelectionBackground());
+                }
+                ((JLabel)component).setBorder(selectedBorder);
+            } else {
+                if (unselectedBorder == null) {
+                    unselectedBorder = BorderFactory.createMatteBorder(2,5,2,5, table.getBackground());
+                }
+                ((JLabel)component).setBorder(unselectedBorder);
+            }
+        }
 
-		((JLabel)component).setToolTipText("RGB value: " + newColor.getRed() + ", " + newColor.getGreen() + ", "+ newColor.getBlue());
-	}
+        ((JLabel)component).setToolTipText("RGB value: " + newColor.getRed() + ", " + newColor.getGreen() + ", "+ newColor.getBlue());
+    }
 }

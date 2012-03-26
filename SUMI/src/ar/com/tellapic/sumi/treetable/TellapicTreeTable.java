@@ -17,8 +17,8 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import ar.com.tellapic.sumi.treetable.editor.AbstractTellapicCellEditor;
+import ar.com.tellapic.sumi.treetable.renderer.AbstractTellapicRenderer;
 import ar.com.tellapic.sumi.treetable.renderer.TellapicHierarchicalCellRenderer;
-import ar.com.tellapic.sumi.treetable.renderer.TellapicTableCellRenderer;
 
 
 
@@ -58,7 +58,7 @@ public class TellapicTreeTable extends JXTreeTable implements TreeSelectionListe
     private static final long serialVersionUID = 1L;
 
 
-    private HashMap<String, TellapicTableCellRenderer> renderersMap;
+    private HashMap<String, TableCellRenderer> renderersMap;
     private HashMap<String, TableCellEditor>   editorsMap;
 
     /**
@@ -73,7 +73,7 @@ public class TellapicTreeTable extends JXTreeTable implements TreeSelectionListe
         setAutoCreateColumnsFromModel(true);
         setTreeCellRenderer(new TellapicHierarchicalCellRenderer());
         
-        renderersMap = new HashMap<String, TellapicTableCellRenderer>();
+        renderersMap = new HashMap<String, TableCellRenderer>();
         editorsMap   = new HashMap<String, TableCellEditor>();
 
         addDefaultRenderers();
@@ -117,7 +117,7 @@ public class TellapicTreeTable extends JXTreeTable implements TreeSelectionListe
      * @param key
      * @param renderer
      */
-    public void registerRendererComponent(String key, TellapicTableCellRenderer renderer) {
+    public void registerRendererComponent(String key, TableCellRenderer renderer) {
         renderersMap.put(key, renderer);
     }
 
@@ -132,12 +132,14 @@ public class TellapicTreeTable extends JXTreeTable implements TreeSelectionListe
     public TableCellRenderer getCellRenderer(int row, int column) {
         if (isHierarchical(column))
             return super.getCellRenderer(row, column);
-
+        
+        //FIXME: PERFORMANCE ISSUE: Try to cache results or provide a better approach through the model
         TreePath treePath = getPathForRow(row);
         TellapicNode node = (TellapicNode) treePath.getLastPathComponent();
         TellapicNodeAction action = node.getActionAt(column);
-        TellapicTableCellRenderer renderer = renderersMap.get(action.getRendererKey());
-        //		renderer.configureRenderer(action);
+        TableCellRenderer renderer = renderersMap.get(action.getRendererKey());
+        if (renderer instanceof AbstractTellapicRenderer)
+            ((AbstractTellapicRenderer)renderer).setTellapicNodeAction(action);
         return renderer;
     }
 

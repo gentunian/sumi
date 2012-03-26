@@ -1,9 +1,10 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi;
+package ar.com.tellapic.sumi.system;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -22,23 +23,7 @@ import java.util.ArrayList;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface UsersInfo {
+public interface SystemCommand {
 
-    public ArrayList<FileInfo> getFiles(String userName);
-    
-    public void getFiles(int uid);
-    
-    public ArrayList<SocketInfo> getSockets(String userName);
-    
-    public void getProcessesId(String userName);
-    
-    public void getProcessesId(int uid);
-    
-    public void getProcessesNames(String userName);
-    
-    public void getProcessesNames(int uid);
-    
-    public ArrayList<ProcessInfo> getProcesses(String userName);
-    
-    public void getProcesses(int uid);
+    public BufferedReader runCmd(String cmd) throws IOException;
 }

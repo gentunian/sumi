@@ -3,12 +3,11 @@
  */
 package ar.com.tellapic.sumi.treetable.renderer;
 
-import java.awt.Component;
-
+import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
 
 import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
+
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -27,14 +26,22 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface TellapicTableCellRenderer extends TableCellRenderer {
-	
-	/**
-	 * 
-	 * @param action
-	 */
-	public void configureRenderer(TellapicNodeAction action, JTable table, boolean isSelected);
-	
-	public void configureRenderer(Component component, TellapicNodeAction action, JTable table, boolean isSelected);
+public class DefaultTellapicLabelRenderer extends AbstractTellapicRenderer {
 
+    /**
+     * 
+     */
+    public DefaultTellapicLabelRenderer() {
+        component = new JLabel();
+        ((JLabel)component).setOpaque(true);
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.renderer.TellapicAbstractRenderer#configureRenderer(java.awt.Component, ar.com.tellapic.sumi.treetable.TellapicNodeAction, javax.swing.JTable, java.lang.Object, boolean, boolean)
+     */
+    @Override
+    public void configureRenderer(TellapicNodeAction action, JTable table, Object value, boolean isSelected, boolean hasFocus) {
+        JLabel label = (JLabel) component;
+        label.setText(value.toString());
+    }
 }

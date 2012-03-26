@@ -1,13 +1,12 @@
 /**
  * 
  */
-package ar.com.tellapic.sumi.renderer;
+package ar.com.tellapic.sumi.treetable.renderer;
 
-import javax.swing.JLabel;
+import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
 import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
-import ar.com.tellapic.sumi.treetable.renderer.AbstractTellapicRenderer;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -26,16 +25,25 @@ import ar.com.tellapic.sumi.treetable.renderer.AbstractTellapicRenderer;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class NodeActionLabelRenderer extends AbstractTellapicRenderer {
+public class DefaultTellapicCheckBoxRenderer extends AbstractTellapicRenderer {
 
-    /* (non-Javadoc)
+    /**
+     * 
+     */
+    public DefaultTellapicCheckBoxRenderer() {
+        component = new JCheckBox();
+        ((JCheckBox)component).setOpaque(true);
+    }
+
+    /*
+     * (non-Javadoc)
      * @see ar.com.tellapic.sumi.treetable.renderer.TellapicAbstractRenderer#configureRenderer(java.awt.Component, ar.com.tellapic.sumi.treetable.TellapicNodeAction, javax.swing.JTable, java.lang.Object, boolean, boolean)
      */
     @Override
-    public void configureRenderer(TellapicNodeAction action, JTable table, Object value,
-            boolean isSelected, boolean hasFocus) {
-        
-        ((JLabel)component).setText(action.getNodeActionName());
-        
+    public void configureRenderer(TellapicNodeAction action, JTable table, Object value, boolean isSelected, boolean hasFocus) {
+        JCheckBox checkBox = (JCheckBox) component;
+        checkBox.setSelected((Boolean) value);
+        checkBox.setText(action.getNodeActionName());
+        checkBox.setEnabled(action.isEditable());
     }
 }

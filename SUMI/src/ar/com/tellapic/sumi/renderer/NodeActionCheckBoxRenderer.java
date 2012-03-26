@@ -3,10 +3,7 @@
  */
 package ar.com.tellapic.sumi.renderer;
 
-import javax.swing.JTable;
-
-import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
-import ar.com.tellapic.sumi.treetable.renderer.TellapicAbstractCheckBoxRenderer;
+import ar.com.tellapic.sumi.treetable.renderer.DefaultTellapicCheckBoxRenderer;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -25,25 +22,14 @@ import ar.com.tellapic.sumi.treetable.renderer.TellapicAbstractCheckBoxRenderer;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class NodeActionCheckBoxRenderer extends TellapicAbstractCheckBoxRenderer {
-	private static final long serialVersionUID = 1L;
+public class NodeActionCheckBoxRenderer extends DefaultTellapicCheckBoxRenderer {
 
 	/**
 	 * 
 	 */
 	public NodeActionCheckBoxRenderer() {
-		super();
-//		setSelectedIcon(new ImageIcon(GumiUserVisibilityCheckBoxRenderer.class.getResource("/icons/eye.png")));
-//		setIcon(new ImageIcon(GumiUserVisibilityCheckBoxRenderer.class.getResource("/icons/eye-close.png")));
-	}
-
-	/* (non-Javadoc)
-	 * @see ar.com.tellapic.gumi.renderer.TellapicTableCellRenderer#configureRenderer(ar.com.tellapic.gumi.treetable.TellapicNodeAction)
-	 */
-	@Override
-	public void configureRenderer(TellapicNodeAction action, JTable table, boolean isSelected) {
-		setText(action.getNodeActionName());
-		setEnabled(action.isEditable());
-		
+//	    JCheckBox checkBox = (JCheckBox) component;
+//		checkBox.setSelectedIcon(new ImageIcon(NodeActionCheckBoxRenderer.class.getResource("/icons/eye.png")));
+//		checkBox.setIcon(new ImageIcon(NodeActionCheckBoxRenderer.class.getResource("/icons/eye-close.png")));
 	}
 }
