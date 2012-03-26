@@ -73,7 +73,8 @@ public class LinuxServices implements Services {
             String line = in.readLine();
             while ((line = in.readLine()) != null) {
                 String[] columns = line.trim().split(" ", 2);
-                LinuxProcessInfo processInfo = new LinuxProcessInfo(Integer.parseInt(columns[0].trim()), columns[1].split(" ")[0], columns[1]);
+                String name = columns[1].split(" ")[0];
+                LinuxProcessInfo processInfo = new LinuxProcessInfo(Integer.parseInt(columns[0].trim()), name.replaceAll("\\/.*\\/", "") , columns[1]);
                 processes.add(processInfo);
             }
             in.close();
