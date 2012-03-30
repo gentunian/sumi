@@ -7,10 +7,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
@@ -46,7 +48,7 @@ import ar.com.tellapic.sumi.treetable.renderer.DefaultTellapicLabelRenderer;
  *
  */
 public class Main {
-    static JFrame frame;
+//    static JFrame frame;
     
     /**
      * @param args
@@ -54,7 +56,9 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                frame = new JFrame("SUMI");
+                final JFrame frame = new JFrame("SUMI");
+                TellapicTreeTableModel model = new SumiUserManager();
+                ((SumiUserManager)model).addUser(new SumiSystemUser(System.getProperty("user.name")), null);
                 final TellapicTreeTable tree = new TellapicTreeTable();
                 tree.setFillsViewportHeight(true);
                 tree.registerRendererComponent(TellapicTreeTable.DEFAULT_COLOR_RENDERER_KEY, new DefaultTellapicColorRenderer(true));
@@ -85,18 +89,18 @@ public class Main {
                 //				});
                 //				
                 JToolBar toolbar = new JToolBar();
-                TellapicTreeTableModel model = new SumiUserManager();
+                
                 tree.setTreeTableModel(model);
 
                 frame.add(toolbar, BorderLayout.NORTH);
 //                toolbar.add(new InsertUserAction((SumiUserManager) model));
 //                toolbar.add(new DeleteNodeAction((SumiUserManager) model));
 //                toolbar.addSeparator();
-//                JToggleButton expandCollapse = new JToggleButton();
-//                expandCollapse.setAction(new ExpandTreeAction(tree));
-//                expandCollapse.setHideActionText(true);
-//                expandCollapse.setIcon(new ImageIcon(Main.class.getResource("/icons/eye--minus.png")));
-//                toolbar.add(expandCollapse);
+                JToggleButton expandCollapse = new JToggleButton();
+                expandCollapse.setAction(new ExpandTreeAction(tree));
+                expandCollapse.setHideActionText(true);
+                expandCollapse.setIcon(new ImageIcon(Main.class.getResource("/icons/eye.png")));
+                toolbar.add(expandCollapse);
 //                JToggleButton gridToggle = new JToggleButton();
 //                gridToggle.setAction(new ToggleGridAction(tree));
 //                gridToggle.setHideActionText(true);
@@ -129,7 +133,7 @@ public class Main {
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.add(new JScrollPane(tree));
                 frame.setVisible(true);
-                ((SumiUserManager)model).addUser(new SumiSystemUser(), null);
+                
                 //model.insertNodeInto(new SumiNode(new String("asdf")), (SumiNode) model.getRoot(), 0);
             }
         });

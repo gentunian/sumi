@@ -25,8 +25,8 @@ package ar.com.tellapic.sumi.treetable;
 public interface TellapicNodeCreatorInterface {
 
     /**
-     * 
-     * @return
+     * Gets the root node for this object
+     * @return a {code}TellapicNode{/code} that its the root of this object
      */
     public TellapicNode getObjectRootNode();
 }

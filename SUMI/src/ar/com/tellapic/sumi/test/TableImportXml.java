@@ -6,8 +6,6 @@ package ar.com.tellapic.sumi.test;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -24,7 +22,6 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.SAXException;
 
-import ar.com.tellapic.sumi.SumiUser;
 import ar.com.tellapic.sumi.SumiUserManager;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionColor;
@@ -121,12 +118,12 @@ public class TableImportXml extends AbstractAction {
 	 */
 	private void test(Node node, TellapicNode parent, String elemName) {
 		while(node != null) {
-			if (node instanceof Element && node.getNodeName().equals(elemName)) {
-				TellapicNode childNode = getTellapicNode((Element) node);
-				model.insertNodeInto(childNode, parent, parent.getChildCount());
-				test(node.getFirstChild(), childNode, elemName);
-			}
-			node = node.getNextSibling();
+//			if (node instanceof Element && node.getNodeName().equals(elemName)) {
+//				TellapicNode childNode = getTellapicNode((Element) node);
+//				model.insertNodeInto(childNode, parent, parent.getChildCount());
+//				test(node.getFirstChild(), childNode, elemName);
+//			}
+//			node = node.getNextSibling();
 		}
 	}
 	
@@ -135,35 +132,36 @@ public class TableImportXml extends AbstractAction {
 	 * @param element
 	 * @return
 	 */
-	private TellapicNode getTellapicNode(Element element) {
-		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
-
-		NodeList nl = element.getElementsByTagName("TellapicNodeAction");
-		if(nl != null) {
-			for(int i = 0; i < nl.getLength(); i++) {
-				
-				Element el = (Element)nl.item(i);
-				if (el.getParentNode().equals(element))
-					actions.add(getTellapicNodeAction(el));
-			}
-		}
-
-		String name = element.getAttribute("name");
-		String iconPath = element.getAttribute("icon_src");
-		int id = Integer.parseInt(element.getAttribute("id"));
-		SumiUser user = new SumiUser(id, name);
-		TellapicNode node = new TellapicNode(user, new ImageIcon(TableImportXml.class.getResource(iconPath)));
-		for(TellapicNodeAction action : actions)
-			node.addAction(action);
-		return node;
-	}
+//	private TellapicNode getTellapicNode(Element element) {
+//		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
+//
+//		NodeList nl = element.getElementsByTagName("TellapicNodeAction");
+//		if(nl != null) {
+//			for(int i = 0; i < nl.getLength(); i++) {
+//				
+//				Element el = (Element)nl.item(i);
+//				if (el.getParentNode().equals(element))
+//					actions.add(getTellapicNodeAction(el));
+//			}
+//		}
+//
+//		String name = element.getAttribute("name");
+//		String iconPath = element.getAttribute("icon_src");
+//		int id = Integer.parseInt(element.getAttribute("id"));
+//		SumiUser user = new SumiUser(id, name);
+//		TellapicNode node = new TellapicNode(user, new ImageIcon(TableImportXml.class.getResource(iconPath)));
+//		for(TellapicNodeAction action : actions)
+//			node.addAction(action);
+//		return node;
+//	}
 	
 	/**
 	 * 
 	 * @param element
 	 * @return
 	 */
-	private TellapicNodeAction getTellapicNodeAction(Element element) {
+	@SuppressWarnings("unused")
+    private TellapicNodeAction getTellapicNodeAction(Element element) {
 		String name = element.getAttribute("name");
 		String type = element.getAttribute("type");
 		String editable = element.getAttribute("editable");

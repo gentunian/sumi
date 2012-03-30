@@ -3,9 +3,6 @@
  */
 package ar.com.tellapic.sumi.system;
 
-import javax.swing.Icon;
-
-import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -24,7 +21,7 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface SocketInfo extends TellapicNodeCreatorInterface {
+public interface SocketInfo {
 
     public String getType();
     
@@ -35,6 +32,8 @@ public interface SocketInfo extends TellapicNodeCreatorInterface {
     public String getName();
     
     public String getProtocol();
+
+    public int getFileDescriptor() throws UnsupportedOperationException;
     
-    public Icon getIcon();
+    public String getFileDescriptorMode() throws UnsupportedOperationException;
 }

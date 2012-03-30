@@ -6,7 +6,6 @@ package ar.com.tellapic.sumi.test;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
 
 import ar.com.tellapic.sumi.treetable.TellapicTreeTable;
@@ -31,8 +30,6 @@ import ar.com.tellapic.sumi.treetable.TellapicTreeTable;
 public class ExpandTreeAction extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 	private TellapicTreeTable treetable;
-	private ImageIcon expandedIcon;
-	private ImageIcon collapsedIcon;
 
 	/**
 	 * 
@@ -41,8 +38,6 @@ public class ExpandTreeAction extends AbstractAction {
 	 */
 	public ExpandTreeAction(TellapicTreeTable treetable) {
 		this.treetable = treetable;
-		this.expandedIcon = new ImageIcon(ExpandTreeAction.class.getResource("/icons/eye--plus.png"));
-		this.collapsedIcon = new ImageIcon(ExpandTreeAction.class.getResource("/icons/eye--minus.png"));
 	}
 
 	/* (non-Javadoc)
@@ -53,12 +48,9 @@ public class ExpandTreeAction extends AbstractAction {
 		JToggleButton button = (JToggleButton) e.getSource();
 		if (button.isSelected()) {
 			treetable.expandAll();
-			button.setIcon(expandedIcon);
 		} else {
 			treetable.collapseAll();
-			button.setIcon(collapsedIcon);
 		}
-		
 	}
 
 }

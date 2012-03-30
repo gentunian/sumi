@@ -203,9 +203,9 @@ public class SumiUserManager extends TellapicTreeTableModel implements SumiUserM
      */
     @Override
     public void setRemoteUsersVisibility(boolean visible) {
-        for(SumiUser user : users)
-            if (user.isRemote())
-                user.setVisible(visible);
+//        for(SumiUser user : users)
+//            if (user.isRemote())
+//                user.setVisible(visible);
     }
     
     

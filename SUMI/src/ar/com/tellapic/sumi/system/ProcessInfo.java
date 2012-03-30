@@ -5,8 +5,6 @@ package ar.com.tellapic.sumi.system;
 
 import java.util.ArrayList;
 
-import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
-
 /**
  *   Copyright (c) 2010 Sebastián Treu.
  *
@@ -24,7 +22,7 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface ProcessInfo extends TellapicNodeCreatorInterface {
+public interface ProcessInfo {
 
     public ArrayList<FileInfo> getFiles();
     

@@ -51,7 +51,9 @@ public class LinuxServices implements Services {
                 String uid = in.readLine();
                 in = linuxCommand.runCmd("id -g "+userName);
                 String gid = in.readLine();
-                userInfo = new LinuxUserInfo(Integer.parseInt(uid), userName, Integer.parseInt(gid), groups);
+                in = linuxCommand.runCmd("echo ~"+userName);
+                String home = in.readLine();
+                userInfo = new LinuxUserInfo(Integer.parseInt(uid), userName, home, Integer.parseInt(gid), groups);
             }
             in.close();
         } catch (IOException e) {
@@ -74,8 +76,8 @@ public class LinuxServices implements Services {
             while ((line = in.readLine()) != null) {
                 String[] columns = line.trim().split(" ", 2);
                 String name = columns[1].split(" ")[0];
-                LinuxProcessInfo processInfo = new LinuxProcessInfo(Integer.parseInt(columns[0].trim()), name.replaceAll("\\/.*\\/", "") , columns[1]);
-                processes.add(processInfo);
+                LinuxProcess process = new LinuxProcess(Integer.parseInt(columns[0].trim()), name.replaceAll("\\/.*\\/", "") , columns[1]);
+                processes.add(process);
             }
             in.close();
         } catch (IOException e) {
@@ -94,13 +96,21 @@ public class LinuxServices implements Services {
         BufferedReader in = null;
         try {
 //            in = linuxCommand.runCmd("lsof -i | awk \'{print $1\" \"$2\" \"$5\" \"$8\" \"$9}\'");
-            in = linuxCommand.runCmd("lsof -i -a -p "+pid+"| awk \'{print $1\" \"$2\" \"$5\" \"$8\" \"$9}\'");
+            in = linuxCommand.runCmd("lsof -i -a -p "+pid+"| awk \'{print $1\" \"$2\" \"$4\" \"$5\" \"$8\" \"$9}\'");
 
             String line = in.readLine();
             while ((line = in.readLine()) != null) {
                 String[] columns = line.split(" ");
-                LinuxSocketInfo socketInfo = new LinuxSocketInfo(columns[0], Integer.parseInt(columns[1]), columns[2], columns[3], columns[4]);
-                sockets.add(socketInfo);
+                LinuxSocket socket = new LinuxSocket(
+                        columns[0],
+                        Integer.parseInt(columns[1]),
+                        Integer.parseInt(columns[2].replaceAll("[urw]", "").trim()),
+                        columns[2].charAt(columns[2].length()-1),
+                        columns[3],
+                        columns[4],
+                        columns[5]
+                        );
+                sockets.add(socket);
             }
             in.close();
         } catch (IOException e) {
@@ -115,5 +125,34 @@ public class LinuxServices implements Services {
     @Override
     public ArrayList<FileInfo> getFiles(int pid) {
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.system.Services#killProcess(int)
+     */
+    @Override
+    public void killProcess(int pid) {
+        try {
+            linuxCommand.runCmd("kill -9 "+pid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.system.Services#reniceProcess(int)
+     */
+    @Override
+    public void reniceProcess(int pid) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.system.Services#closeSocket(int)
+     */
+    @Override
+    public void closeSocket(int fd) throws UnsupportedOperationException {
+        
     }
 }

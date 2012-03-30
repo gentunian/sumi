@@ -50,7 +50,7 @@ public class LinuxCommand implements SystemCommand {
     public BufferedReader runCmd(String cmd) throws IOException {
         //TODO: Synchronization
         shellCmd[2] = cmd;
-        Process p = Runtime.getRuntime().exec(shellCmd);
+        java.lang.Process p = Runtime.getRuntime().exec(shellCmd);
         cmdResult = new BufferedReader(new InputStreamReader(p.getInputStream()));
         return cmdResult;
     }

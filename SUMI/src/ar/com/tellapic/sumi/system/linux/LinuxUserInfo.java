@@ -5,13 +5,9 @@ package ar.com.tellapic.sumi.system.linux;
 
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
-
 import ar.com.tellapic.sumi.system.ProcessInfo;
-import ar.com.tellapic.sumi.system.SumiSystemUser;
 import ar.com.tellapic.sumi.system.SystemServices;
 import ar.com.tellapic.sumi.system.SystemUserInfo;
-import ar.com.tellapic.sumi.treetable.TellapicNode;
 
 
 
@@ -47,8 +43,8 @@ public class LinuxUserInfo implements SystemUserInfo {
      * @param gid
      * @param groups
      */
-    public LinuxUserInfo(int uid, String userName, int gid, String[] groups) {
-        this.home = System.getProperty("user.home");
+    public LinuxUserInfo(int uid, String userName, String home, int gid, String[] groups) {
+        this.home = home;
         this.uid = uid;
         this.name = userName;
         this.gid = gid;
@@ -76,7 +72,7 @@ public class LinuxUserInfo implements SystemUserInfo {
      * @see ar.com.tellapic.sumi.system.SystemUserInfo#getUserID()
      */
     @Override
-    public int getUserID() {
+    public int getUserId() {
         return uid;
     }
 
@@ -102,19 +98,5 @@ public class LinuxUserInfo implements SystemUserInfo {
     @Override
     public String[] getGroups() {
         return groups;
-    }
-
-    /* (non-Javadoc)
-     * @see ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface#getObjectRootNode()
-     */
-    @Override
-    public TellapicNode getObjectRootNode() {
-
-        TellapicNode processesRootNode = new TellapicNode("Processes", new ImageIcon(SumiSystemUser.class.getResource("/icons/processor.png")));
-
-        for(ProcessInfo process : processes)
-            processesRootNode.add(process.getObjectRootNode());
-
-        return processesRootNode;
     }
 }

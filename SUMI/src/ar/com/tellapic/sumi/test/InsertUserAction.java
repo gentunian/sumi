@@ -67,7 +67,7 @@ public class InsertUserAction extends AbstractAction {
 	
 	private void buildNode(DialogInfo data) {
 //		SumiUser user = new SumiUser(0, data.getNodeName());
-	    SumiSystemUser user = new SumiSystemUser();
+	    SumiSystemUser user = new SumiSystemUser("lol");
 
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 

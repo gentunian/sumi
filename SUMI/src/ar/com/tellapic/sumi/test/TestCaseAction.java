@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import ar.com.tellapic.sumi.SumiUser;
 import ar.com.tellapic.sumi.SumiUserManager;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
 import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionColor;
@@ -42,7 +41,8 @@ public class TestCaseAction extends AbstractAction {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private SumiUserManager model;
+	@SuppressWarnings("unused")
+    private SumiUserManager model;
 	private Color[] colorArray = new Color[] {
 			Color.red,
 			Color.blue,
@@ -68,9 +68,9 @@ public class TestCaseAction extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		List<SumiUser> users = createUsers(40);
-		model.addUser(users.get(0), createTest(3));
-		model.addUser(users.get(1), createTest(3));
+//		List<SumiUser> users = createUsers(40);
+//		model.addUser(users.get(0), createTest(3));
+//		model.addUser(users.get(1), createTest(3));
         
 //		for(int i = 0; i < users.size(); i++) {
 //			if (i < 10) {
@@ -88,14 +88,14 @@ public class TestCaseAction extends AbstractAction {
 //		}
 	}
 	
-	private List<SumiUser> createUsers(int howMany) {
-		List<SumiUser> list = new ArrayList<SumiUser>();
-		for(int i = 0; i < howMany; i++) {
-			SumiUser user = new SumiUser(0, "user"+i);
-			list.add(user);
-		}
-		return list;
-	}
+//	private List<SumiUser> createUsers(int howMany) {
+//		List<SumiUser> list = new ArrayList<SumiUser>();
+//		for(int i = 0; i < howMany; i++) {
+//			SumiUser user = new SumiUser(0, "user"+i);
+//			list.add(user);
+//		}
+//		return list;
+//	}
 	
 	@SuppressWarnings("unused")
     private List<TellapicNodeAction> createLabelActions(int howMany) {
@@ -134,7 +134,8 @@ public class TestCaseAction extends AbstractAction {
 		return actions;
 	}
 	
-	private List<TellapicNodeAction> createTest(int howMany) {
+	@SuppressWarnings("unused")
+    private List<TellapicNodeAction> createTest(int howMany) {
 		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
 		TellapicNodeAction a1 = new OrderIssuedNodeAction("", new String[]{"SO-123","12/12/12"}, false);
 		TellapicNodeAction a2 = new ItemsNodeAction("", new String[]{"item1","item2","item3"}, false);

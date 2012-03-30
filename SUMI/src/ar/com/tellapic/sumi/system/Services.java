@@ -32,5 +32,11 @@ public interface Services {
     public ArrayList<SocketInfo> getSockets(int pid);
     
     public ArrayList<FileInfo> getFiles(int pid);
+    
+    public void killProcess(int pid);
+    
+    public void reniceProcess(int pid);
+    
+    public void closeSocket(int fd) throws UnsupportedOperationException;
  
 }

@@ -3,8 +3,6 @@
  */
 package ar.com.tellapic.sumi.system;
 
-import java.util.ArrayList;
-
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -23,17 +21,9 @@ import java.util.ArrayList;
  *         sebastian.treu(at)gmail.com
  *
  */
-public interface SystemUserInfo {
+public interface Process extends ProcessInfo {
 
-    public ArrayList<ProcessInfo> getProcesses();
+    public void kill();
     
-    public String getUserName();
-    
-    public int getUserId();
-    
-    public String getUserHomePath();
-
-    public int getGroupID();
-    
-    public String[] getGroups();
+    public void renice(int newPriority);
 }

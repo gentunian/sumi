@@ -29,22 +29,25 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface;
  */
 public class SumiUser extends Observable implements TellapicNodeCreatorInterface {
 
-    public static final int REMOTE_CHANGED     = -10;
+    /* Constants for property changes */
     public static final int SELECTION_CHANGED  = -9;
     public static final int VISIBILITY_CHANGED = -8;
     public static final int NAME_SET           = -7;
     public static final int USER_ID_SET        = -6;
 
+    /* Basic information a SumiUser will hold */
     private int              userId;
     private String           name;
     private boolean          visible;
     private boolean          selected;
-    private boolean          remote;
+
+    /* Icons */
     private Icon             icon;
     private Icon             propertyIcon;
     
-    private ToggleUserVisibilityNodeAction toggleVisibilityAction = new ToggleUserVisibilityNodeAction();
-    private UserSelectedStateNodeAction    selectedStateAction = new UserSelectedStateNodeAction();
+    
+    private ToggleUserVisibilityNodeAction toggleVisibilityAction = new ToggleUserVisibilityNodeAction("");
+    private UserSelectedStateNodeAction    selectedStateAction    = new UserSelectedStateNodeAction("");
 
     /**
      * 
@@ -55,13 +58,12 @@ public class SumiUser extends Observable implements TellapicNodeCreatorInterface
      * @param selected
      */
     public SumiUser(int id, String name, boolean visible, boolean remote, boolean selected) {
-        this.userId   = id;
-        this.name     = name;
-        this.visible  = visible;
-        this.remote   = remote;
-        this.selected = selected;
-        this.icon = new ImageIcon(SumiUser.class.getResource("/icons/user.png"));
-        this.propertyIcon = new ImageIcon(SumiUser.class.getResource("/icons/property.png"));
+        setUserId(id);
+        setName(name);
+        setVisible(visible);
+        setSelected(selected);
+        setIcon(new ImageIcon(SumiUser.class.getResource("/icons/user.png")));
+        setPropertyIcon(new ImageIcon(SumiUser.class.getResource("/icons/property.png")));
     }
 
     /**
@@ -162,24 +164,6 @@ public class SumiUser extends Observable implements TellapicNodeCreatorInterface
         return selected;
     }
 
-    /**
-     * @param remote the remote to set
-     */
-    public void setRemote(boolean remote) {
-        if (this.remote != remote)
-            setChanged();
-
-        this.remote = remote;
-        notifyObservers(new Object[]{REMOTE_CHANGED});
-    }
-
-    /**
-     * @return the remote
-     */
-    public boolean isRemote() {
-        return remote;
-    }
-
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -189,34 +173,7 @@ public class SumiUser extends Observable implements TellapicNodeCreatorInterface
         return name;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface#getObjectNodes()
-     */
-    @Override
-    public TellapicNode getObjectRootNode() {
-        TellapicNode rootNode = new TellapicNode(this, getIcon());
-        TellapicNode isVisibleNode = new TellapicNode("Visible", getPropertyIcon(), toggleVisibilityAction);
-        TellapicNode isRemoteNode = new TellapicNode("Remote", getPropertyIcon(), new DefaultTellapicNodeActionCheckBox("", false));
-        TellapicNode nameNode = new TellapicNode("Name", getPropertyIcon(), new DefaultTellapicNodeActionLabel(name, false));
-        TellapicNode idNode = new TellapicNode("Id", getPropertyIcon(), new DefaultTellapicNodeActionLabel(String.valueOf(userId), false));
-        TellapicNode isSelectedNode = new TellapicNode("Selected", getPropertyIcon(), selectedStateAction);
-        // Add the nodes to the root node...
-        rootNode.add(isSelectedNode);
-        rootNode.add(isRemoteNode);
-        rootNode.add(isVisibleNode);
-        rootNode.add(nameNode);
-        rootNode.add(idNode);
-        // Configure nodes...
-        isVisibleNode.setTooltipText("User visibility property");
-        isSelectedNode.setTooltipText("User selected property");
-        nameNode.setTooltipText("User name property");
-        idNode.setTooltipText("User id property");
-        isRemoteNode.setTooltipText("User remote property");
-        // Return the root
-        return rootNode;
-    }
-
+    
     /**
      * @return
      */
@@ -247,4 +204,109 @@ public class SumiUser extends Observable implements TellapicNodeCreatorInterface
         this.propertyIcon = icon;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface#getObjectNodes()
+     */
+    @Override
+    public TellapicNode getObjectRootNode() {
+        // Create the root node
+        TellapicNode rootNode = new TellapicNode(this, getIcon());
+        
+        // Create the node for the visible property that will hold
+        // the action 'toggleVisibilityAction'
+        TellapicNode isVisibleNode = new TellapicNode(
+                "Visible",
+                getPropertyIcon(),
+                toggleVisibilityAction
+                );
+        
+        // Create the node for the name property. This will hold a default label action.
+        TellapicNode nameNode = new TellapicNode(
+                "Name",
+                getPropertyIcon(),
+                new DefaultTellapicNodeActionLabel(
+                        name,
+                        false // we will not edit this field
+                        )
+                );
+        
+        // Create the node for the id property and a default label action.
+        TellapicNode idNode = new TellapicNode(
+                "Id",
+                getPropertyIcon(),
+                new DefaultTellapicNodeActionLabel(
+                        String.valueOf(userId),
+                        false // we will not edit this field
+                        )
+                );
+        
+        // Lastly, the selected node with a custom action: 'selectedStateAction'
+        TellapicNode isSelectedNode = new TellapicNode(
+                "Selected",
+                getPropertyIcon(),
+                selectedStateAction
+                );
+        
+        // Add the nodes to the root node...
+        rootNode.add(isSelectedNode);
+        rootNode.add(isVisibleNode);
+        rootNode.add(nameNode);
+        rootNode.add(idNode);
+        
+        // Configure nodes...[OPTIONAL AND NOT FULLY TESTED]
+        isVisibleNode.setTooltipText("User visibility property");
+        isSelectedNode.setTooltipText("User selected property");
+        nameNode.setTooltipText("User name property");
+        idNode.setTooltipText("User id property");
+        
+        // Return the root
+        return rootNode;
+    }
+    
+    // How will the model know if we are selected?
+    // There are better approachs maybe, this is straighforward.
+    private class UserSelectedStateNodeAction extends DefaultTellapicNodeActionCheckBox {
+
+        // False == Not editable action, just shows information with a checkbox
+        public UserSelectedStateNodeAction(String text) {
+            super(text, false); // We don't want the CheckBox to be editable
+        }
+        
+        @Override
+        public Object getValue() {
+            return isSelected();
+        }
+    }
+    
+    // We will provide a way to interact with this user visibility property.
+    // This is another straightforward example of using @see ar.com.tellapic.gumi.TellapicNodeAction
+    private class ToggleUserVisibilityNodeAction extends DefaultTellapicNodeActionCheckBox {
+        
+        // False == Not editable action, just shows information with a checkbox
+        public ToggleUserVisibilityNodeAction(String text) {
+            super(text, true); // We want the CheckBox to be editable
+        }
+        
+        /* (non-Javadoc)
+         * @see ar.com.tellapic.gumi.TellapicNodeAction#setValue(java.lang.Object)
+         */
+        @Override
+        public void setValue(Object value) {
+            // Avoid halting in vain if for some reason the model is doing something wrong
+            // Log to standard output instead
+            if (value instanceof Boolean)
+                setVisible((Boolean) value);
+            else
+                System.out.println("[WRN!!] Value "+value+" should be a Boolean instance.");
+        }
+
+        /* (non-Javadoc)
+         * @see ar.com.tellapic.gumi.TellapicNodeAction#getValue()
+         */
+        @Override
+        public Object getValue() {
+            return isVisible();
+        }
+    }
 }
