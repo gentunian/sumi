@@ -359,7 +359,7 @@ If you have followed the first example, you probably want to be sure that you ha
 
 I have created this _case of use_ supposing each object knows how to create it's properties information. For example, the `SumiUser` abstract class knows how to return its `TellapicNode` based on his properties (or _fields_). This is related with the above note about decoupling the model. The next example, I'll leave this job to the `TellapicTreeTableModel` instead. The model should know about the object it manages. For example, suppose you extend `TellapicTreeTableModel` with `MyPetsModel`. One initial approach will be `MyPetsModel` knowing what `MyPets` objects are. Based on that information, the model will create each `TellapicNode`s and `TellapicNodeAction`s for every `MyPets` it manages. Think about a `FileSystemModel`. The model _knows_ which file system is based on, and how files/directories are managed.
 
-That said, I'll erroneously let `SumiUser` abstract class to implement `TellapicNodeCreatorInterface.getObjectRootNode()` method.
+That said, I'll erroneously let `SumiUser` class to implement `TellapicNodeCreatorInterface.getObjectRootNode()` method.
 
 This is the interface that I'm talking about:
 
@@ -377,10 +377,10 @@ public interface TellapicNodeCreatorInterface {
 And the code below shows the _erroneously_ written `SumiUser` class:
 
 {{{
-public abstract class SumiUser extends Observable implements TellapicNodeCreatorInterface {
+public class SumiUser extends Observable implements TellapicNodeCreatorInterface {
 
-    private ToggleUserVisibilityNodeAction toggleVisibilityAction = new ToggleUserVisibilityNodeAction();
-    private UserSelectedStateNodeAction    selectedStateAction    = new UserSelectedStateNodeAction();
+    private ToggleUserVisibilityNodeAction toggleVisibilityAction = new ToggleUserVisibilityNodeAction(""); // we don't want to show extra text
+    private UserSelectedStateNodeAction    selectedStateAction    = new UserSelectedStateNodeAction(""); // we don't want to show extra text
 
     // Some code ...
 
@@ -449,8 +449,8 @@ public abstract class SumiUser extends Observable implements TellapicNodeCreator
     private class UserSelectedStateNodeAction extends DefaultTellapicNodeActionCheckBox {
 
         // False == Not editable action, just shows information with a checkbox
-        public UserSelectedStateNodeAction() {
-            super("", false);
+        public UserSelectedStateNodeAction(String text) {
+            super(text, false); // we don't want this action to be editable
         }
         
         @Override
@@ -464,8 +464,8 @@ public abstract class SumiUser extends Observable implements TellapicNodeCreator
     private class ToggleUserVisibilityNodeAction extends DefaultTellapicNodeActionCheckBox {
         
         // False == Not editable action, just shows information with a checkbox
-        public ToggleUserVisibilityNodeAction() {
-            super("", false);
+        public ToggleUserVisibilityNodeAction(String text) {
+            super(text, false); // we don't want this action to be editable
         }
         
         /* (non-Javadoc)
@@ -492,4 +492,168 @@ public abstract class SumiUser extends Observable implements TellapicNodeCreator
 }
 }}}
 
-Ok. This is an abstract class (oh, a _erroneously_ written abstract class). We need to extend this class for our "system users" example. So, I'll extend it and create `SystemSumiUser` _concrete_ class:
+Ok. We need to extend this class for our "system users" example. So, I'll extend `SumiUser` and create `SumiSystemUser` that will adapt an interface `SystemUserInfo`. The reason why is because `SumiSystemUser` must be a different thing. So, we will use `SystemUserInfo` as it will provide the required abstraction level. Implementations may vary across platforms.
+
+The code below illustrate this interface:
+
+{{{
+public interface SystemUserInfo {
+
+    public ArrayList<ProcessInfo> getProcesses();
+    
+    public String getUserName();
+    
+    public int getUserId();
+    
+    public String getUserHomePath();
+
+    public int getGroupID();
+    
+    public String[] getGroups();
+}
+}}}
+
+A extremely basic user information. Implementations should be classes based in the underlying platform. For instance, I wrote `LinuxUserInfo`. Same applies to `ProcessInfo`, `SocketInfo` and `FileInfo` interfaces. Their intent is to collect some common attributes between platforms. Anyway, this details should not be of interest.
+
+Consider now the important parts of `SumiSystemUser` class:
+
+{{{
+public class SumiSystemUser extends SumiUser {
+    
+    // We adapt this class to a _real_ user system class
+    private SystemUserInfo userInfo;
+    
+    /**
+     * @param id<
+     * @param name
+     * @param visible
+     * @param remote
+     * @param selected
+     */
+    public SumiSystemUser(String userName) {
+        super(0, userName);
+        userInfo = SystemServices.getServices().getUserInfo(userName);
+        this.setUserId(userInfo.getUserId());
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUser#getObjectRootNode()
+     */
+    @Override
+    public TellapicNode getObjectRootNode() {
+        // Retrieve the node from our parent
+        TellapicNode rootNode = super.getObjectRootNode();
+        
+        // We add the home directory node
+        TellapicNode homeNode = new TellapicNode("Home", getPropertyIcon(), new DefaultTellapicNodeActionLabel(userInfo.getUserHomePath(), false));
+        rootNode.add(homeNode);
+        
+        // We collect the processes in use *NOW* (this is for the example, it will not auto-update)
+        // and put them in a TellapicNode.
+        Icon processIcon = new ImageIcon(SumiSystemUser.class.getResource("/icons/processor.png"));
+        TellapicNode processesRootNode = new TellapicNode("Processes", processIcon);
+        for(ProcessInfo processInfo : userInfo.getProcesses()) {
+            TellapicNode processNode = new TellapicNode(processInfo, processIcon);
+
+            String pid = String.valueOf(processInfo.getProcessId());
+            
+            // Create a default action that shows info in a JLabel
+            TellapicNodeAction pidInfo  = new DefaultTellapicNodeActionLabel(pid, false);
+            TellapicNodeAction nameInfo = new DefaultTellapicNodeActionLabel(processInfo.getProcessCommand(), false);
+            
+            // Create the nodes that will hold properties and actions
+            TellapicNode pidNode  = new TellapicNode("PID", getPropertyIcon(), pidInfo);
+            TellapicNode nameNode = new TellapicNode("Command", getPropertyIcon(), nameInfo);
+            
+            // Add the info-nodes to its parent
+            processNode.add(pidNode);
+            processNode.add(nameNode);
+            
+            // We collect the sockets in use *NOW* (this is for the example, it will not auto-update)
+            // and put them in a TellapicNode.
+            Icon socketIcon = new ImageIcon(SumiSystemUser.class.getResource("/icons/socket.png"));
+            TellapicNode socketsRootNode = new TellapicNode("Sockets", socketIcon);
+            for(SocketInfo socketInfo : processInfo.getSockets()) {
+                TellapicNode socketNode     = new TellapicNode(socketInfo, socketIcon);
+                
+                pid = String.valueOf(socketInfo.getProcessId());
+                String fd = String.valueOf(socketInfo.getFileDescriptor());
+                // Create info actions.
+                TellapicNodeAction socketNameInfo = new DefaultTellapicNodeActionLabel(socketInfo.getProcessName(), false);
+                TellapicNodeAction socketPidInfo  = new DefaultTellapicNodeActionLabel(pid, false);
+                TellapicNodeAction socketFDInfo   = new DefaultTellapicNodeActionLabel(fd, false);
+                TellapicNodeAction socketModeInfo = new DefaultTellapicNodeActionLabel(socketInfo.getFileDescriptorMode(), false);
+                TellapicNodeAction socketProtInfo = new DefaultTellapicNodeActionLabel(socketInfo.getProtocol(), false);
+                TellapicNodeAction socketTypeInfo = new DefaultTellapicNodeActionLabel(socketInfo.getType(), false);
+                // Create the nodes
+                TellapicNode socketNameNode = new TellapicNode("Process Name", getPropertyIcon(), socketNameInfo);
+                TellapicNode socketFdNode   = new TellapicNode("File Descriptor", getPropertyIcon(), socketFDInfo);
+                TellapicNode socketModeNode = new TellapicNode("File Descriptor Mode", getPropertyIcon(), socketModeInfo);
+                TellapicNode socketPidNode  = new TellapicNode("PID", getPropertyIcon(), socketPidInfo);
+                TellapicNode socketTypeNode = new TellapicNode("Protocol", getPropertyIcon(), socketTypeInfo);
+                TellapicNode socketProtNode  = new TellapicNode("Type", getPropertyIcon(), socketProtInfo);
+                // Add the nodes to its parend
+                socketNode.add(socketNameNode);
+                socketNode.add(socketPidNode);
+                socketNode.add(socketFdNode);
+                socketNode.add(socketModeNode);
+                socketNode.add(socketProtNode);
+                socketNode.add(socketTypeNode);
+                //TODO: create action for closing sockets
+                
+                // Add the parent to the root
+                socketsRootNode.add(socketNode);
+            }
+            // Create a TellapicNodeAction for killing the process
+            TellapicNodeAction killAction = new DefaultTellapicNodeActionButton(new KillProcessAction());
+            processNode.addAction(killAction);
+            processNode.add(socketsRootNode);
+            processesRootNode.add(processNode);
+        }
+        rootNode.add(processesRootNode);
+        return rootNode;
+    }
+    
+    // Create a kill linux-process SWING action
+    // TODO: extend the process interface
+    private class KillProcessAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
+        public KillProcessAction() {
+            Icon icon = new ImageIcon(KillProcessAction.class.getResource("/icons/cancel.png"));
+            putValue(AbstractAction.SMALL_ICON, icon); 
+            putValue(AbstractAction.NAME, "Kill");
+            putValue(AbstractAction.SHORT_DESCRIPTION, "Kill process");
+        }
+
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            TellapicNodeAction action = (TellapicNodeAction) e.getSource();
+            if (action.getNode().getUserObject() instanceof Process) {
+                Process process = (Process) action.getNode().getUserObject();
+                int option = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure to kill process "+process.getProcessId()+"?",
+                        "Killing Process",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                        );
+                if (option == JOptionPane.CANCEL_OPTION)
+                    return;
+                // Kill 'em all
+                process.kill();
+            }
+        }
+    }
+}
+
+And thats basically the system user adapter I wrote. For updating in real-time the approach should be different. This is not the goal of this example. This example is intended to show a real-world scenario and how to wrap around objects with `TellapicNode`s and `TellapicNodeAction`s. The interaction with actions for desired nodes should be straighforward. Editors and renderers provided are at least what you can expect. There's also a color editor provided stolen from java tutorials. However, they aren't finished yet. I need more code in the button editor.
+
+With both examples you should have learned how to write renderers, editors, and how to use them in nodes. Also, how to use actions for each object. `TellapicNodeAction` could be thought as an `AbstractAction` adapter for tree tables.
+
+
+}}}
