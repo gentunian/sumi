@@ -340,12 +340,156 @@ I created this `TellapicTreeTable` thing in order to extend the use of the SWING
 
 The extesion will be used in my main project [http://code.google.com/p/tellapic tellapic], but here I've used *SUMI* to show a possible implementation: User Administration.
 
+*PLEASE NOTE*: As I'm writting this, I'll make a big change in the user manager model. Basically, I'll decouple the users model from the view model. That is, I'll separate the basic model (my collection of users) from the model for the view (the `TreeTableModel`) as my model *must* be put appart from everything related to views. The `TreeTableModel` should be the specific class that wraps around or uses the most basi model. It allows me to write a model-view independent model (whatever that means). The next example will be the same, but with a proper written model.
+
+
 === What will you get? ===
 
 Well, something like [http://i.imgur.com/OK7Q3.png this]:
 
-[http://imgur.com/OK7Q3 http://i.imgur.com/OK7Q3.png]
+[http://i.imgur.com/OK7Q3.png http://i.imgur.com/OK7Q3.png]
 
 I've created a basic interface for gathering system user information. This depends on what OS you are running the software. So, I wrote a `Service` interface and I've only written concrete classes based on Linux OSes.
 
 Anyway, that has nothing to do with the use of the `TellapicTreeTable` extension and its `TellapicNode`s and `TellapicNodeAction`s, so I'll not mention anything about that. Just keep the abstraction :) (thats what an interface is it for though).
+
+=== Where to start? ===
+
+If you have followed the first example, you probably want to be sure that you have something working. But the good news are: SUMI provides a bunch of standards renderers (_still coding those_) and editors (_and these_). For this complex example, you won't need to write any renderer/editor (you _should_ have learned that with the first example).
+
+I have created this _case of use_ supposing each object knows how to create it's properties information. For example, the `SumiUser` abstract class knows how to return its `TellapicNode` based on his properties (or _fields_). This is related with the above note about decoupling the model. The next example, I'll leave this job to the `TellapicTreeTableModel` instead. The model should know about the object it manages. For example, suppose you extend `TellapicTreeTableModel` with `MyPetsModel`. One initial approach will be `MyPetsModel` knowing what `MyPets` objects are. Based on that information, the model will create each `TellapicNode`s and `TellapicNodeAction`s for every `MyPets` it manages. Think about a `FileSystemModel`. The model _knows_ which file system is based on, and how files/directories are managed.
+
+That said, I'll erroneously let `SumiUser` abstract class to implement `TellapicNodeCreatorInterface.getObjectRootNode()` method.
+
+This is the interface that I'm talking about:
+
+{{{
+public interface TellapicNodeCreatorInterface {
+
+    /**
+     * Gets the root node for this object
+     * @return a {code}TellapicNode{/code} that its the root of this object
+     */
+    public TellapicNode getObjectRootNode();
+}
+}}}
+
+And the code below shows the _erroneously_ written `SumiUser` class:
+
+{{{
+public abstract class SumiUser extends Observable implements TellapicNodeCreatorInterface {
+
+    private ToggleUserVisibilityNodeAction toggleVisibilityAction = new ToggleUserVisibilityNodeAction();
+    private UserSelectedStateNodeAction    selectedStateAction    = new UserSelectedStateNodeAction();
+
+    // Some code ...
+
+    /*
+     * (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface#getObjectNodes()
+     */
+    @Override
+    public TellapicNode getObjectRootNode() {
+        // Create the root node
+        TellapicNode rootNode = new TellapicNode(this, getIcon());
+        
+        // Create the node for the visible property that will hold
+        // the action 'toggleVisibilityAction'
+        TellapicNode isVisibleNode = new TellapicNode(
+                "Visible",             // the displayed name of the node
+                getPropertyIcon(),     // the displayed icon
+                toggleVisibilityAction // the 'attached' action (i.e. a column)
+                );
+        
+        // Create the node for the name property. This will hold a default label action.
+        TellapicNode nameNode = new TellapicNode(
+                "Name",
+                getPropertyIcon(),
+                new DefaultTellapicNodeActionLabel(
+                        name,
+                        false // we will not edit this field
+                        )
+                );
+        
+        // Create the node for the id property and a default label action.
+        TellapicNode idNode = new TellapicNode(
+                "Id",
+                getPropertyIcon(),
+                new DefaultTellapicNodeActionLabel(
+                        String.valueOf(userId),
+                        false // we will not edit this field
+                        )
+                );
+        
+        // Lastly, the selected node with a custom action: 'selectedStateAction'
+        TellapicNode isSelectedNode = new TellapicNode(
+                "Selected",
+                getPropertyIcon(),
+                selectedStateAction
+                );
+        
+        // Add the nodes to the root node...
+        rootNode.add(isSelectedNode);
+        rootNode.add(isVisibleNode);
+        rootNode.add(nameNode);
+        rootNode.add(idNode);
+        
+        // Configure nodes...[OPTIONAL AND NOT FULLY TESTED]
+        isVisibleNode.setTooltipText("User visibility property");
+        isSelectedNode.setTooltipText("User selected property");
+        nameNode.setTooltipText("User name property");
+        idNode.setTooltipText("User id property");
+        
+        // Return the root
+        return rootNode;
+    }
+    
+    // How will the model know if we are selected?
+    // There are better approachs maybe, this is straighforward.
+    private class UserSelectedStateNodeAction extends DefaultTellapicNodeActionCheckBox {
+
+        // False == Not editable action, just shows information with a checkbox
+        public UserSelectedStateNodeAction() {
+            super("", false);
+        }
+        
+        @Override
+        public Object getValue() {
+            return isSelected();
+        }
+    }
+    
+    // We will provide a way to interact with this user visibility property.
+    // This is another straightforward example of using @see ar.com.tellapic.gumi.TellapicNodeAction
+    private class ToggleUserVisibilityNodeAction extends DefaultTellapicNodeActionCheckBox {
+        
+        // False == Not editable action, just shows information with a checkbox
+        public ToggleUserVisibilityNodeAction() {
+            super("", false);
+        }
+        
+        /* (non-Javadoc)
+         * @see ar.com.tellapic.gumi.TellapicNodeAction#setValue(java.lang.Object)
+         */
+        @Override
+        public void setValue(Object value) {
+            // Avoid halting in vain if for some reason the model is doing something wrong
+            // Log to standard output instead
+            if (value instanceof Boolean)
+                setVisible((Boolean) value);
+            else
+                System.out.println("[WRN!!] Value "+value+" should be a Boolean instance.");
+        }
+
+        /* (non-Javadoc)
+         * @see ar.com.tellapic.gumi.TellapicNodeAction#getValue()
+         */
+        @Override
+        public Object getValue() {
+            return isVisible();
+        }
+    }
+}
+}}}
+
+Ok. This is an abstract class (oh, a _erroneously_ written abstract class). We need to extend this class for our "system users" example. So, I'll extend it and create `SystemSumiUser` _concrete_ class:
