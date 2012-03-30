@@ -345,9 +345,9 @@ The extesion will be used in my main project [http://code.google.com/p/tellapic 
 
 === What will you get? ===
 
-Well, something like [http://i.imgur.com/OK7Q3.png this]:
+Well, something like [http://i.imgur.com/hIqDG.png this]:
 
-[http://i.imgur.com/OK7Q3.png http://i.imgur.com/OK7Q3.png]
+[http://imgur.com/hIqDG http://i.imgur.com/hIqDG.png]
 
 I've created a basic interface for gathering system user information. This depends on what OS you are running the software. So, I wrote a `Service` interface and I've only written concrete classes based on Linux OSes.
 
@@ -650,10 +650,158 @@ public class SumiSystemUser extends SumiUser {
         }
     }
 }
+}}}
 
 And thats basically the system user adapter I wrote. For updating in real-time the approach should be different. This is not the goal of this example. This example is intended to show a real-world scenario and how to wrap around objects with `TellapicNode`s and `TellapicNodeAction`s. The interaction with actions for desired nodes should be straighforward. Editors and renderers provided are at least what you can expect. There's also a color editor provided stolen from java tutorials. However, they aren't finished yet. I need more code in the button editor.
 
 With both examples you should have learned how to write renderers, editors, and how to use them in nodes. Also, how to use actions for each object. `TellapicNodeAction` could be thought as an `AbstractAction` adapter for tree tables.
 
+=== So, is it there a main? ===
 
+Yes, putting this together is something like this:
+
+{{{
+public class Main {
+    
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                final JFrame frame = new JFrame("SUMI");
+
+                // Create the model
+                TellapicTreeTableModel model = new SumiUserManager();
+
+                // Add a "system user" to the model
+                ((SumiUserManager)model).addUser(
+                    new SumiSystemUser(
+                        System.getProperty("user.name")
+                        ),
+                    null
+                );
+
+                // Create the tree table
+                final TellapicTreeTable tree = new TellapicTreeTable();
+                
+                // Set the model
+                tree.setTreeTableModel(model);
+
+                tree.setFillsViewportHeight(true);
+                // Register editors/renderers
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_COLOR_RENDERER_KEY,
+                    new DefaultTellapicColorRenderer(true)
+                );
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY,
+                    new NodeActionCheckBoxRenderer()
+                );
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_BUTTON_RENDERER_KEY,
+                    new DefaultTellapicButtonRenderer()
+                );
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_LABEL_RENDERER_KEY,
+                    new DefaultTellapicLabelRenderer()
+                );
+                tree.registerEditorComponent(
+                    TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY,
+                    new DefaultTellapicCheckBoxCellEditor()
+                );
+                tree.registerEditorComponent(
+                    TellapicTreeTable.DEFAULT_BUTTON_EDITOR_KEY,
+                    new DefaultTellapicButtonCellEditor()
+                ); 		
+  
+                // Create a button for changing look and feel		
+                JToolBar toolbar = new JToolBar();
+                JButton lnfButton = new JButton();
+                PopupLookAndFeelMenu lnfMenu = new PopupLookAndFeelMenu();
+                lnfMenu.addLookAndFeelListener(new LookAndFeelListener(){
+                    @Override
+                    public void lookAndFeelChanged() {
+                        SwingUtilities.updateComponentTreeUI(frame);
+                        frame.pack();
+                    }
+                });
+                lnfButton.setAction(lnfMenu);
+                toolbar.add(lnfButton);
+                frame.setPreferredSize(new Dimension(800,600));
+                frame.pack();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.add(new JScrollPane(tree));
+                frame.setVisible(true);
+            }
+        });
+    }
+}
+
+// Nothing to do with treetables
+public interface LookAndFeelListener {
+    
+    public void lookAndFeelChanged();
+}
+
+// Nothing to do with treetables
+public class PopupLookAndFeelMenu extends AbstractAction implements ItemListener {
+    private static final long serialVersionUID = 1L;
+    private LookAndFeelListener listener;
+
+    public PopupLookAndFeelMenu() {
+        putValue(AbstractAction.SMALL_ICON, new ImageIcon(PopupLookAndFeelMenu.class.getResource("/icons/property.png")));
+    }
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JPopupMenu menu = new JPopupMenu();
+        String currentLnF = UIManager.getLookAndFeel().getName();
+        for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(info.getName());
+            item.setName(info.getClassName());
+            item.addItemListener(this);
+            menu.add(item);
+            item.setSelected(info.getName().equals(currentLnF));
+        }
+        JComponent invoker = (JComponent) e.getSource();
+        menu.show(invoker, invoker.getWidth()- 2, invoker.getHeight() -2);
+    }
+    
+    /**
+     * 
+     * @param lnfName
+     */
+    public void setLookAndFeel(String lnfName) {
+        try {
+            UIManager.setLookAndFeel(lnfName);
+        } catch (UnsupportedLookAndFeelException e) {
+            //fallback
+        } catch (ClassNotFoundException e) {
+            //fallback
+        } catch (InstantiationException e) {
+            //fallback
+        } catch (IllegalAccessException e) {
+            //fallback
+        }
+        listener.lookAndFeelChanged();
+    }
+
+    /* (non-Javadoc)
+     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+     */
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        setLookAndFeel(((JMenuItem)e.getSource()).getName());
+    }
+
+    /**
+     * @param runnable
+     */
+    public void addLookAndFeelListener(LookAndFeelListener l) {
+        listener = l;
+    }
+}
 }}}
