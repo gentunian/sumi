@@ -1,5 +1,6 @@
 #summary Minimal explanation about SUMI
 #labels Featured
+<wiki:toc max_depth="2" />
 
 = What role `TellapicNodeAction` objects should play? =
 
@@ -332,3 +333,19 @@ http://i.imgur.com/QkmGu.png
 
 However, this example is not complete for a self-running test. You could check/browse the code inside the `test` package.
 <g:plusone size="medium"></g:plusone>
+
+== Complex Example (Linux System User) ==
+
+I created this `TellapicTreeTable` thing in order to extend the use of the SWING `JTable` (In fact, I extended [http://download.java.net/javadesktop/swinglabs/releases/0.8/docs/api/org/jdesktop/swingx/JXTreeTable.html `JXTreeTable`]). The needs were interfacing a treetable in order to get usability from them. I don't know if I reach the objective in the proper way, but I least I feel more comfortable using my extension.
+
+The extesion will be used in my main project [http://code.google.com/p/tellapic tellapic], but here I've used *SUMI* to show a possible implementation: User Administration.
+
+=== What will you get? ===
+
+Well, something like [http://i.imgur.com/OK7Q3.png this]:
+
+[http://imgur.com/OK7Q3 http://i.imgur.com/OK7Q3.png]
+
+I've created a basic interface for gathering system user information. This depends on what OS you are running the software. So, I wrote a `Service` interface and I've only written concrete classes based on Linux OSes.
+
+Anyway, that has nothing to do with the use of the `TellapicTreeTable` extension and its `TellapicNode`s and `TellapicNodeAction`s, so I'll not mention anything about that. Just keep the abstraction :) (thats what an interface is it for though).
