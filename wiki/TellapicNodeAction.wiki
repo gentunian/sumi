@@ -336,11 +336,11 @@ However, this example is not complete for a self-running test. You could check/b
 
 == Complex Example (Linux System User) ==
 
-I created this `TellapicTreeTable` thing in order to extend the use of the SWING `JTable` (In fact, I extended [http://download.java.net/javadesktop/swinglabs/releases/0.8/docs/api/org/jdesktop/swingx/JXTreeTable.html `JXTreeTable`]). The needs were interfacing a treetable in order to get usability from them. I don't know if I reach the objective in the proper way, but I least I feel more comfortable using my extension.
+I created this `TellapicTreeTable` thing in order to extend the use of the SWING `JTable` (In fact, I extended [http://download.java.net/javadesktop/swinglabs/releases/0.8/docs/api/org/jdesktop/swingx/JXTreeTable.html `JXTreeTable`]). The needs were interfacing a treetable in order to get usability from them. I don't know if I reach the objective in the proper way, but at least I feel more comfortable using my extension.
 
 The extesion will be used in my main project [http://code.google.com/p/tellapic tellapic], but here I've used *SUMI* to show a possible implementation: User Administration.
 
-*PLEASE NOTE*: As I'm writting this, I'll make a big change in the user manager model. Basically, I'll decouple the users model from the view model. That is, I'll separate the basic model (my collection of users) from the model for the view (the `TreeTableModel`) as my model *must* be put appart from everything related to views. The `TreeTableModel` should be the specific class that wraps around or uses the most basi model. It allows me to write a model-view independent model (whatever that means). The next example will be the same, but with a proper written model.
+*PLEASE NOTE*: As I'm writting this, I'll make a big change in the user manager model. Basically, I'll decouple the users model from the view model. That is, I'll separate the basic model (my collection of users) from the model for the view (the `TreeTableModel`) as my model *must* be put appart from everything related to views. The `TreeTableModel` should be the specific class that wraps around or uses the most basic model. It allows me to write a model-view independent model (whatever that means). The next example will be the same, but with a proper written model.
 
 
 === What will you get? ===
