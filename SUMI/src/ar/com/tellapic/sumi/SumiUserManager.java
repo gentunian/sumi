@@ -3,17 +3,14 @@
  */
 package ar.com.tellapic.sumi;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.AbstractAction;
-
-import ar.com.tellapic.sumi.treetable.TellapicNode;
-import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
-import ar.com.tellapic.sumi.treetable.TellapicTreeTableModel;
+import java.util.Set;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -32,220 +29,195 @@ import ar.com.tellapic.sumi.treetable.TellapicTreeTableModel;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class SumiUserManager extends TellapicTreeTableModel implements SumiUserManagerInterface, SumiUserManagerState, Observer {
-
-    /* The users list */
+public class SumiUserManager extends Observable implements SumiUserManagerInterface, SumiUserManagerState, Observer {
+    
+    public static final String USER_ADDED = "ADD";
+    public static final String USER_REMOVED = "REMOVE";
+    
     private ArrayList<SumiUser> users;
-
-    /**
-     * Constructor: Creates an empty uses list.
-     */
-    public SumiUserManager() {
-        super();
+    private long sid;
+    
+    private static class Holder {
+        private static final SumiUserManager INSTANCE = new SumiUserManager();
+    }
+    
+    private SumiUserManager() {
         users = new ArrayList<SumiUser>();
-    }
-
-    /**
-     * 
-     * @param user
-     */
-    private void cleanRemovedUser(SumiUser user) {
-        System.out.println("Child count: "+getRoot().getChildCount());
-        user.deleteObserver(this);
-        TellapicNode removedNode = getNodeForUser(user);
-        removeNodeFromParent(removedNode);
-        //TODO: Check if node was removed (e.g. has no more references)
-        System.out.println("Child count: "+getRoot().getChildCount());
+        sid = 0;
     }
     
     /**
      * 
-     * @param user
+     * @return
      */
-    private void arrangeAddedUser(SumiUser user, List<TellapicNodeAction> actions) {
-        user.addObserver(this);
-
-        /* Create the node that will wrap the object */
-//        TellapicNode node = new TellapicNode(user, new ImageIcon(SumiUserManager.class.getResource("/icons/user.png")));
-        TellapicNode node = user.getObjectRootNode();
-        node.addTellapicNodeAddActionListener(nodeChangeListener);
-
-        /* As we know that we are adding a SumiUser, build the preferred actions... */
-        /* Should we put this code here? */
-//        TellapicNodeAction visibilityAction = new DefaultTellapicNodeActionCheckBox(new ToggleVisibilityAction());
-//        actions.add(visibilityAction);
-
-        if (actions != null)
-            for(TellapicNodeAction nodeAction : actions)
-                node.addAction(nodeAction);
-
-        /* And finally, put the node into the tree model */
-        TellapicNode insertAtNode = (TellapicNode) getRoot();
-        int idx = insertAtNode.getChildCount();
-        insertNodeInto(node, insertAtNode, idx);
+    public static SumiUserManager getInstance() {
+        return Holder.INSTANCE;
     }
     
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#addUser(ar.com.tellapic.gumi.SumiUser, java.util.List)
+    
+    /* (non-Javadoc)
+     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
     @Override
-    public boolean addUser(SumiUser user, List<TellapicNodeAction> actions) {
-        boolean added = users.add(user);
-
-        if (added)
-            arrangeAddedUser(user, actions);
-
-        return added;
+    public void update(Observable o, Object arg) {
+        if (o instanceof SumiUser) {
+            SumiUser user = (SumiUser) o;
+            if (arg instanceof String) {
+                Object property = user.getProperty((String) arg);
+                if (property != null) {
+                    
+                }
+            }
+        }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#delUser(java.lang.String)
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerState#getUser(java.lang.String)
      */
     @Override
-    public boolean delUser(String name) {
-        SumiUser user = getUser(name);
+    public List<SumiUser> getUsers(String propertyName, Object propertyValue) {
+        List<SumiUser> rUsers = new ArrayList<SumiUser>();
+
+        for(int i = 0; i < users.size(); i++) {
+            SumiUser u = users.get(i);
+            if (u.getProperty(propertyName) != propertyValue) 
+                rUsers.add(u);
+        }
         
-        return delUser(user);
+        return rUsers;
     }
-
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#delUser(int)
-     */
-    @Override
-    public boolean delUser(int id) {
-        SumiUser user = getUser(id);
-
-        return delUser(user);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.SumiUserManagerInterface#delUser(ar.com.tellapic.gumi.SumiUser)
-     */
-    @Override
-    public boolean delUser(SumiUser user) {
-        boolean removed = users.remove(user);
+    
+    
+    public List<SumiUser> getUsers(Map<String, Object> properties) {
+        List<SumiUser> rUsers = new ArrayList<SumiUser>();
         
-        if (removed)
-            cleanRemovedUser(user);
+        for(int i = 0; i < users.size(); i++) {
+            SumiUser u = users.get(i);
+            Set<Entry<String, Object>> s1 = u.getProperties().entrySet();
+            Set<Entry<String, Object>> s2 = properties.entrySet();
+            
+            if (s1.containsAll(s2))
+                rUsers.add(u);
+        }
         
-        return removed;
+        return rUsers;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.SumiUserManagerState#getUsers()
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerState#getUsers()
      */
     @Override
     public List<SumiUser> getUsers() {
         return users;
     }
-
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.SumiUserManagerState#getUser(java.lang.String)
-     */
-    @Override
-    public SumiUser getUser(String userName) {
-        SumiUser user  = null;
-        int i;
-
-        for(i = 0; i < users.size() && !users.get(i).getName().equals(userName); i++);
-
-        if (i < users.size())
-            user = users.get(i);
-
-        return user;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see ar.com.tellapic.gumi.SumiUserManagerState#getUser(int)
-     */
-    @Override
-    public SumiUser getUser(int id) {
-        SumiUser user = null;
-        int i;
-        for(i = 0; i < users.size() && users.get(i).getUserId() != id; i++);
-
-        if (i < users.size())
-            user = users.get(i);
-
-        return user;
-    }
-
-
-    /* (non-Javadoc)
-     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-     */
-    @Override
-    @SuppressWarnings("unused")
-    public void update(Observable o, Object arg) {
-        Object[] params = (Object[])arg;
-        SumiUser user = (SumiUser) o;
-        int userIndex = users.indexOf(user);
-        //TODO: some work
-    }
-
-    /* (non-Javadoc)
-     * @see ar.com.tellapic.sumi.SumiUserManagerState#getUser(boolean)
-     */
-    @Override
-    public List<SumiUser> getUsers(boolean remoteUser) {
-        return users;
-    }
-
-    /* (non-Javadoc)
-     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#setUserVisible(boolean, boolean)
-     */
-    @Override
-    public void setRemoteUsersVisibility(boolean visible) {
-//        for(SumiUser user : users)
-//            if (user.isRemote())
-//                user.setVisible(visible);
-    }
     
     
-    /**
-     * 
-     *   Copyright (c) 2010 Sebastián Treu.
-     *
-     *   This program is free software; you can redistribute it and/or modify
-     *   it under the terms of the GNU General Public License as published by
-     *   the Free Software Foundation; version 2 of the License.
-     *
-     *   This program is distributed in the hope that it will be useful,
-     *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-     *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     *   GNU General Public License for more details.
-     *
-     * @author
-     *         Sebastian Treu 
-     *         sebastian.treu(at)gmail.com
-     *
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerState#getUser(java.lang.String)
      */
-    @SuppressWarnings("unused")
-    private class ToggleVisibilityAction extends AbstractAction {
-        private static final long serialVersionUID = 1L;
+    @Override
+    public SumiUser getUser(String name) {
+        List<SumiUser> u = getUsers(SumiUser.PROPERTY_NAME, name);
+        return (u.size() > 0)? u.get(0) : null; // We don't allow users to have same name
+    }
 
-        public ToggleVisibilityAction() {
-            putValue(ACTION_COMMAND_KEY, "Visibility");
-            putValue(NAME, "Visibility");
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerState#getUser(int)
+     */
+    @Override
+    public SumiUser getUser(long id) {
+        List<SumiUser> u = getUsers(SumiUser.PROPERTY_ID, id);
+        return (u.size() > 0)? u.get(0) : null; // We don't allow users to have same ID
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerState#getUser(int, java.lang.String)
+     */
+    @Override
+    public SumiUser getUser(long id, String userName) {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put(SumiUser.PROPERTY_ID, id);
+        m.put(SumiUser.PROPERTY_NAME, userName);
+
+        List<SumiUser> u = getUsers(m);
+        return (u.size() > 0)? u.get(0) : null;
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#addUser(ar.com.tellapic.sumi.SumiUser)
+     */
+    @Override
+    public boolean addUser(SumiUser user) {
+        if (getUser(user.getUserId(), user.getName()) != null)
+            return false;
+        
+        boolean added = users.add(user);
+
+        if (added) {
+            user.addObserver(this);
+            setChanged();
+            notifyObservers(new Object[]{USER_ADDED, user});
         }
 
-        /* (non-Javadoc)
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            TellapicNodeAction action = (TellapicNodeAction) e.getSource();
-            TellapicNode node = action.getNode();
-            SumiUser user = (SumiUser) node.getUserObject();
-            boolean oldValue = user.isVisible();
-            user.setVisible(!oldValue);
+        return added;
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#delUser(java.lang.String)
+     */
+    @Override
+    public boolean delUser(String userName) {
+        SumiUser user = getUser(userName);
+        return delUser(user);
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#delUser(int)
+     */
+    @Override
+    public boolean delUser(long id) {
+        SumiUser user = getUser(id);
+        return delUser(user);
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#delUser(ar.com.tellapic.sumi.SumiUser)
+     */
+    @Override
+    public boolean delUser(SumiUser user) {
+        boolean removed = users.remove(user);
+        
+        if (removed) {
+            user.deleteObserver(this);
+            setChanged();
+            notifyObservers(new Object[]{USER_REMOVED, user});
         }
+        
+        return removed;
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#createUser(java.lang.String, int)
+     */
+    @Override
+    public SumiUser createUser(String userName, long id) {
+        SumiUser user = new SumiUser(id, userName);
+        return (addUser(user))? user : null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUserManagerInterface#createUser(java.lang.String, int)
+     */
+    @Override
+    public SumiUser createUser(String userName) {
+        SumiUser u = null;
+        do {
+            u = new SumiUser(sid, userName);
+            sid++;
+            System.out.println(u);
+        }
+        while (!addUser(u));
+        return u;
     }
 }

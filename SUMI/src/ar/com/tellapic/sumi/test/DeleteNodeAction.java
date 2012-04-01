@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import ar.com.tellapic.sumi.SumiUser;
 import ar.com.tellapic.sumi.SumiUserManager;
 import ar.com.tellapic.sumi.treetable.TellapicNode;
+import ar.com.tellapic.sumi.treetable.TellapicTreeTableModel;
 
 
 /**
@@ -31,26 +32,32 @@ import ar.com.tellapic.sumi.treetable.TellapicNode;
  *
  */
 public class DeleteNodeAction extends AbstractAction {
-	private static final long serialVersionUID = 1L;
-	private SumiUserManager model;
-	
-	/**
-	 * @param model 
-	 * @param tree
-	 */
-	public DeleteNodeAction(SumiUserManager model) {
-		super("Delete User" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/minus-button.png")));
-		putValue(SHORT_DESCRIPTION, "Deletes the selected user.");
-		this.model = model;
-	}
+    private static final long serialVersionUID = 1L;
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	    for(TellapicNode node : model.getSelectedNodes())
-	        model.delUser((SumiUser) node.getUserObject());
-	}
+    private TellapicTreeTableModel model;
+
+    /**
+     * @param model 
+     * @param tree
+     */
+    public DeleteNodeAction(TellapicTreeTableModel model) {
+        super("Delete User" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/minus-button.png")));
+        putValue(SHORT_DESCRIPTION, "Deletes the selected user.");
+        this.model = model;
+    }
+
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (model == null)
+            return;
+        
+        for(TellapicNode node : model.getSelectedNodes()) {
+            SumiUser user = (SumiUser) node.getUserObject();
+            SumiUserManager.getInstance().delUser(user);
+        }
+    }
 }
 

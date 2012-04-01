@@ -4,6 +4,7 @@
 package ar.com.tellapic.sumi;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -24,34 +25,48 @@ import java.util.List;
  */
 public interface SumiUserManagerState {
 
-	/**
-	 * Retrieves an user.
-	 * 
-	 * @param userName The user name of the user to be retrieved.
-	 * @return The user with name userName or null if no such user exists.
-	 */
-	public SumiUser getUser(String userName);
-	
-	/**
-	 * Retrieves an user.
-	 * 
-	 * @param id The user id of the user to be retrieved.
-	 * @returnThe user with id or null if no such user exists.
-	 */
-	public SumiUser getUser(int id);
-	
-	/**
-	 * 
-	 * @param remoteUser
-	 * @return
-	 */
-	public List<SumiUser> getUsers(boolean remoteUser);
+    /**
+     * 
+     * @param id
+     * @param userName
+     * @return
+     */
+    public SumiUser getUser(long id, String userName);
+    
+    /**
+     * 
+     * @param properties
+     * @return
+     */
+    public List<SumiUser> getUsers(Map<String, Object> properties);
+    
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    public SumiUser getUser(String name);
+    
+    /**
+     * 
+     * @param id
+     * @return
+     */
+    public SumiUser getUser(long id);
+    
+    /**
+     * Retrieves an user.
+     * 
+     * @param userName The user name of the user to be retrieved.
+     * @return The user with name userName or null if no such user exists.
+     */
+    public List<SumiUser> getUsers(String propertyName, Object propertyValue);
 
-	/**
-	 * Get the list of users.
-	 * 
-	 * @return the list of users.
-	 */
-	public List<SumiUser> getUsers();
-	
+    /**
+     * Get the list of users.
+     * 
+     * @return the list of users.
+     */
+    public List<SumiUser> getUsers();
+
 }

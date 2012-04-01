@@ -30,8 +30,7 @@ import ar.com.tellapic.sumi.SumiUser;
  *
  */
 public class TellapicTreeTableModel extends DefaultTreeTableModel {
-	private TableColumnModel             tcm;
-	protected TellapicNodeAddActionListener    nodeChangeListener;
+	private TableColumnModel                   tcm;
 	
 	public TellapicTreeTableModel(TableColumnModel tcm) {
 		root = new TellapicNode("root", null);
@@ -104,13 +103,6 @@ public class TellapicTreeTableModel extends DefaultTreeTableModel {
 		
 		return ((TellapicNode) node).getActionAt(columnIndex).isEditable();
 	}
-	
-//	@Override
-//	public void insertNodeInto(MutableTreeTableNode newChild, MutableTreeTableNode parent, int index) {
-//		super.insertNodeInto(newChild, parent, index);
-//		SumiNode node = (SumiNode) parent;
-//		node.addSumiNodeAddActionListener(nodeChangeListener);
-//	}
 
 	/**
 	 * Gets the TellapicNode wrapped around a SumiUser object.
@@ -157,14 +149,5 @@ public class TellapicTreeTableModel extends DefaultTreeTableModel {
 	            selectedNodes.add(child);
 	    }
 	    return selectedNodes;
-	}
-	
-	
-	/**
-	 * 
-	 * @param l
-	 */
-	public void addSumiNodeAddActionListener(TellapicNodeAddActionListener l) {
-		nodeChangeListener = l;
 	}
 }

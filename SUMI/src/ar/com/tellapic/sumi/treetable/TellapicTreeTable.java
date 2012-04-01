@@ -132,8 +132,7 @@ public class TellapicTreeTable extends JXTreeTable implements TreeSelectionListe
     public TableCellRenderer getCellRenderer(int row, int column) {
         if (isHierarchical(column))
             return super.getCellRenderer(row, column);
-        
-        //FIXME: PERFORMANCE ISSUE: Try to cache results or provide a better approach through the model
+
         TreePath treePath = getPathForRow(row);
         TellapicNode node = (TellapicNode) treePath.getLastPathComponent();
         TellapicNodeAction action = node.getActionAt(column);

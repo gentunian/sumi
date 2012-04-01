@@ -3,16 +3,12 @@
  */
 package ar.com.tellapic.sumi.test;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -34,29 +30,20 @@ import javax.swing.UnsupportedLookAndFeelException;
  *         sebastian.treu(at)gmail.com
  *
  */
-public class PopupLookAndFeelMenu extends AbstractAction implements ItemListener {
+public class LookAndFeelMenu extends JMenu implements ItemListener {
     private static final long serialVersionUID = 1L;
     private LookAndFeelListener listener;
 
-    public PopupLookAndFeelMenu() {
-        putValue(AbstractAction.SMALL_ICON, new ImageIcon(PopupLookAndFeelMenu.class.getResource("/icons/property.png")));
-    }
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JPopupMenu menu = new JPopupMenu();
+    public LookAndFeelMenu() {
+        super("Look and Feel");
         String currentLnF = UIManager.getLookAndFeel().getName();
         for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
             JCheckBoxMenuItem item = new JCheckBoxMenuItem(info.getName());
             item.setName(info.getClassName());
             item.addItemListener(this);
-            menu.add(item);
+            add(item);
             item.setSelected(info.getName().equals(currentLnF));
         }
-        JComponent invoker = (JComponent) e.getSource();
-        menu.show(invoker, invoker.getWidth()- 2, invoker.getHeight() -2);
     }
     
     /**
@@ -75,7 +62,8 @@ public class PopupLookAndFeelMenu extends AbstractAction implements ItemListener
         } catch (IllegalAccessException e) {
             //fallback
         }
-        listener.lookAndFeelChanged();
+        if (listener != null)
+            listener.lookAndFeelChanged();
     }
 
     /* (non-Javadoc)
@@ -83,11 +71,12 @@ public class PopupLookAndFeelMenu extends AbstractAction implements ItemListener
      */
     @Override
     public void itemStateChanged(ItemEvent e) {
-        setLookAndFeel(((JMenuItem)e.getSource()).getName());
+        Object item = e.getItem();
+        setLookAndFeel(((JMenuItem)item).getName());
     }
 
     /**
-     * @param runnable
+     * @param lookAndFeelListener
      */
     public void addLookAndFeelListener(LookAndFeelListener l) {
         listener = l;

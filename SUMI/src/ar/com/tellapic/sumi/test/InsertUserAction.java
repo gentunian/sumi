@@ -4,20 +4,11 @@
 package ar.com.tellapic.sumi.test;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import ar.com.tellapic.sumi.SumiUserManager;
-import ar.com.tellapic.sumi.system.SumiSystemUser;
-import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCheckBox;
-import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionCombo;
-import ar.com.tellapic.sumi.treetable.DefaultTellapicNodeActionLabel;
-import ar.com.tellapic.sumi.treetable.EmptyTellapicNodeAction;
-import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
 
 /**
  *   Copyright (c) 2010 Sebastián Treu.
@@ -38,60 +29,34 @@ import ar.com.tellapic.sumi.treetable.TellapicNodeAction;
  */
 public class InsertUserAction extends AbstractAction {
 
-	private static final long serialVersionUID = 1L;
-	private SumiUserManager userManager;
+    private static final long serialVersionUID = 1L;
 
-	
-	/**
-	 * @param tree
-	 */
-	public InsertUserAction(SumiUserManager userManager) {
-		super("Add User" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/plus-button.png")));
-		putValue(SHORT_DESCRIPTION, "Adds a new user.");
-		this.userManager = userManager;
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		CreateNewNodeDialog dialog = new CreateNewNodeDialog(null);
-		dialog.setVisible(true);
-		dialog.pack();
-		if (dialog.EXIT_STATUS < 0)
-			return;
-		DialogInfo data = dialog.getDialogInfo();
-		buildNode(data);
- 	}
-	
-	private void buildNode(DialogInfo data) {
-//		SumiUser user = new SumiUser(0, data.getNodeName());
-	    SumiSystemUser user = new SumiSystemUser("lol");
 
-		List<TellapicNodeAction> actions = new ArrayList<TellapicNodeAction>();
+    /**
+     * @param tree
+     */
+    public InsertUserAction() {
+        super("Add User" ,new ImageIcon(CreateNewNodeDialog.class.getResource("/icons/plus-button.png")));
+        putValue(SHORT_DESCRIPTION, "Adds a new user.");
+    }
 
-		/* Gets the column data (e.g. builds SumiNodeAction) */
-		for(Entry<String, String> map : data.getColumnData()) {
-			String key = map.getKey();
-			String value = map.getValue();
-			TellapicNodeAction nodeAction = null;
-			if (key.equals("text")) {
-				nodeAction = new DefaultTellapicNodeActionLabel(value, true);
-			} else if (key.equals("combo")) {
-				String[] lblValues = value.split(":");
-				if (lblValues.length > 1)
-					nodeAction = new DefaultTellapicNodeActionCombo(lblValues[0], lblValues[1].split(","));
-				else
-					nodeAction = new DefaultTellapicNodeActionCombo("", value.split(","));
-			} else if (key.equals("boolean")) {
-				nodeAction = new DefaultTellapicNodeActionCheckBox(value);
-			} else {
-				nodeAction = new EmptyTellapicNodeAction(null);
-			}
-			actions.add(nodeAction);
-		}
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        CreateNewNodeDialog dialog = new CreateNewNodeDialog(null);
+        dialog.setVisible(true);
+        dialog.pack();
+        if (dialog.EXIT_STATUS < 0)
+            return;
+        DialogInfo data = dialog.getDialogInfo();
+        buildNode(data);
+    }
 
-		userManager.addUser(user, actions);
-	}
+    private void buildNode(DialogInfo data) {
+
+        SumiUserManager.getInstance().createUser(data.getNodeName());
+
+    }
 }

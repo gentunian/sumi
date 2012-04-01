@@ -27,9 +27,9 @@ import javax.swing.AbstractAction;
 public class DefaultTellapicNodeActionCheckBox extends DefaultAbstractTellapicNodeAction {
 
 
-    public DefaultTellapicNodeActionCheckBox(String name, boolean editable) {
+    public DefaultTellapicNodeActionCheckBox(String name, boolean initValue, boolean editable) {
         super(name, TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY, TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY, editable);
-        setValue(true);
+        setValue(initValue);
     }
     /**
      * 
@@ -54,7 +54,7 @@ public class DefaultTellapicNodeActionCheckBox extends DefaultAbstractTellapicNo
      * @param name
      */
     public DefaultTellapicNodeActionCheckBox(String name) {
-        this(name, true);
+        this(name, true, true);
     }
 
     /* (non-Javadoc)
