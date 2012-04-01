@@ -1,6 +1,6 @@
 #summary Minimal explanation about SUMI
 #labels Featured
-<wiki:toc max_depth="2" />
+<wiki:toc max_depth="3" />
 
 = What role `TellapicNodeAction` objects should play? =
 
