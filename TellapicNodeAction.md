@@ -1,0 +1,805 @@
+
+
+# What role `TellapicNodeAction` objects should play? #
+
+`TellapicNodeAction` is an interface that defines a couple of methods that some object should implement in order to follow an expected behaviour, but anyone can implement that interface as they want.
+
+For the whole project perspective, an abstract class called `DefaultAbstractTellapicNodeAction` implements the mentioned interface and defines the _expected behaviour_ stated above.
+
+So, what we should expect from concretes `DefaultAbstractTellapicNodeAction` objects?
+
+Basically, this objects have:
+  * A reference to a Swing `AbstractAction` object (_it could be_ `null`),
+  * A key that indicates what kind of renderer it will use (_more on this later_),
+  * A key that indicates what kind of editor it will use (_more on this later_),
+  * A reference to a `TellapicNode` that is the node from the tree hierarchical column that contains an user object (_see_ `AbstractMutableTreeTableNode`),
+  * An `Object` that represents the cell value,
+  * A name,
+  * And a boolean value indicating if the cell that we are representing is editable.
+
+You may note that `DefaultAbstractTellapicNodeAction` provides information and placeholders to know enough on how to interact/represent/modify the data in a custom column for a specific node. Each _node action_ is information that a specific node provides with the ability to interact and modify that information. So, you _attach_ `DefaultAbstractTellapicNodeAction` objects to `TellapicNode`s. These objects are shown in cells and they are placed along columns and rows in the treetable. To be exact, none of these objects are _actually shown_ or rendered. These objects provides the mechanism to show, modify, and interact with the model data. They preserve a relationship with the nodes from the tree model in the sense that they represent some action on the node (or user object); some information from the node; etc.
+
+The basic use of these _actions_ is as follows:
+
+  * If desired, create a concrete class from `AbstractAction` to do something (`ActionEvent.getSource()` _will return a_ `DefaultAbstractTellapicNodeAction` _object if you've extended the behaviour-desired class_).
+
+  * Extend `DefaultAbstractTellapicNodeAction` if none of the default classes (`DefaultTellapicNodeActionButton` ,`DefaultTellapicNodeActionCheckBox`,`DefaultTellapicNodeActionColor`,  `DefaultTellapicNodeActionCombo`,  `DefaultTellapicNodeActionLabel`) suits your needs. Take note that interaction with the model is made by the abstract class. You could override as needed or create your custom implementation directly from `TellapicNodeAction`, but you will miss most of the trick.
+
+  * Create the renderer if needed. Renderers should implement `TellapicTableCellRenderer` (_I'll remove that constraint in a near future. The fact is that the interface extends_ `TableCellRenderer` _and provides_ `configureRenderer()` _method called inside_ `TellapicTreeTable` _with the correct action node_).
+
+  * Create the editor if we need to interact with the information provided by the model. It's recommended to extend `AbstractTellapicCellEditor` as that abstract class overrides `stopCellEditing()` from `AbstractCellEditor` to perform the `AbstractAction` and execute the action over the node.
+
+  * Register renderers and editors with the `TellapicTreeTable` object calling `registerRendererComponent()` and `registerEditorComponent()` respectively.
+
+Everything should be set up if you've followed the above instructions. The last thing to do is to add user objects to nodes, add actions to nodes, add nodes to the model, etc.
+
+
+## Minimal Example ##
+
+What follows is an example to get you in the main idea. It should be noted that some portions of code should be avoided, cleaned and/or redesigned. For simplicity, and in order to answer [@gumuru question](http://stackoverflow.com/questions/8923089/swing-jtable-custom-rendering/9375212) I've made this custom example shorter and directly to the design idea:
+
+### Point 1: Create an `AbstractAction` object ###
+
+```
+package ar.com.tellapic.sumi.test;
+
+import java.awt.event.ActionEvent;
+
+/**
+ *   Copyright (c) 2010 Sebastián Treu.
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; version 2 of the License.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ * @author
+ *         Sebastian Treu 
+ *         sebastian.treu(at)gmail.com
+ *
+ */
+public class SomeSwingAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+
+    public SomeSwingAction() {
+        putValue(AbstractAction.NAME, "SomeSwingAction");
+    }
+    
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        TellapicNodeAction action = (TellapicNodeAction) e.getSource();
+        TellapicNode node = action.getNode();
+        JOptionPane.showMessageDialog(null, "ActionPerformed for node: "+node);
+    }
+}
+```
+
+### Point 2: Extend `DefaultAbstractTellapicNodeAction` ###
+
+Take note that keys are hardcoded for simplicity
+
+```
+package ar.com.tellapic.sumi.test;
+
+import javax.swing.AbstractAction;
+
+import ar.com.tellapic.sumi.treetable.DefaultAbstractTellapicNodeAction;
+
+/**
+ *   Copyright (c) 2010 Sebastián Treu.
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; version 2 of the License.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ * @author
+ *         Sebastian Treu 
+ *         sebastian.treu(at)gmail.com
+ *
+ */
+public class DualImageNodeAction extends DefaultAbstractTellapicNodeAction {
+
+    /**
+     * @param action The action that will be triggered.
+     */
+    public DualImageNodeAction(AbstractAction action) {
+        super(action, "TickButtonEditor", "DualImageRenderer", true);
+    }
+
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.TellapicNodeAction#getData()
+     */
+    @Override
+    public Object getData() {
+        return new String[] {"/icons/Warning.png", "/icons/ok.png"};
+    }
+}
+```
+
+### Point 3: Create the renderer ###
+
+```
+package ar.com.tellapic.sumi.test;
+
+import java.awt.BorderLayout;
+
+/**
+ *   Copyright (c) 2010 Sebastián Treu.
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; version 2 of the License.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ * @author
+ *         Sebastian Treu 
+ *         sebastian.treu(at)gmail.com
+ *
+ */
+public class DualImageRenderer extends TellapicAbstractPanelRenderer {
+    private JLabel labelImage;
+    private JButton buttonImage;
+
+    public DualImageRenderer(boolean vertical) {
+        super();
+
+        labelImage = new JLabel();
+        buttonImage = new JButton();
+        labelImage.setHorizontalAlignment(JLabel.HORIZONTAL);
+        labelImage.setVerticalAlignment(JLabel.CENTER);
+        buttonImage.setHorizontalAlignment(JLabel.HORIZONTAL);
+        buttonImage.setVerticalAlignment(JLabel.CENTER);
+        if (!vertical) {
+            setLayout(new GridLayout(0, 2));
+            add(labelImage, BorderLayout.EAST);
+            add(buttonImage, BorderLayout.WEST);
+        } else { 
+            setLayout(new GridLayout(2, 0));
+            add(labelImage, BorderLayout.NORTH);
+            add(buttonImage, BorderLayout.SOUTH);
+        }
+    }
+    /* (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.renderer.TellapicTableCellRenderer#configureRenderer(ar.com.tellapic.sumi.treetable.TellapicNodeAction, javax.swing.JTable, boolean)
+     */
+    @Override
+    public void configureRenderer(TellapicNodeAction action, JTable table, boolean isSelected) {
+        String[] data = (String[])action.getData();
+        labelImage.setIcon(new ImageIcon(DualImageRenderer.class.getResource(data[0])));
+        buttonImage.setIcon(new ImageIcon(DualImageRenderer.class.getResource(data[1])));
+    }
+    
+    public JButton getButtonImage() {
+        return buttonImage;
+    }
+    
+    public JLabel getLabelImage() {
+        return labelImage;
+    }
+}
+```
+
+### Point 4: Create the editor ###
+
+The following class need to get more work on it and defines a _button default editor_ in the package. Is almost written for this example only.
+
+```
+public class DefaultTellapicButtonEditor extends AbstractTellapicCellEditor implements TableCellEditor {
+
+    private static final long serialVersionUID = 1L;
+
+    protected JButton editor;
+    
+    public DefaultTellapicButtonEditor() {
+        editor = new JButton();
+        editor.setOpaque(true);
+        editor.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stopCellEditing();
+            }
+        });
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.swing.CellEditor#getCellEditorValue()
+     */
+    @Override
+    public Object getCellEditorValue() {
+        return "Testing";
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+     */
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        return editor;
+    }
+}
+```
+
+I don't encourage the use of these classes! I serialize and deserialize the used renderer because I know what I'm doing here. It's a `DualImageRenderer` so I copy the objects as they can be de/serialized and I take advantage of it for avoid copying each property.
+
+```
+public class TickButtonEditor extends DefaultTellapicButtonEditor implements TableCellEditor {
+    private static final long serialVersionUID = 1L;
+    
+    public TickButtonEditor() {
+        super();
+    }
+   
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+     */
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        TableCellRenderer renderer = table.getCellRenderer(row, column);
+        DualImageRenderer dualImageRenderer = (DualImageRenderer) renderer.getTableCellRendererComponent(table, value, isSelected, true, row, column);
+        DualImageRenderer clonedRenderer = (DualImageRenderer) clonePanel(dualImageRenderer);
+        JButton rendererButton = clonedRenderer.getButtonImage();
+        clonedRenderer.remove(rendererButton);
+        editor.setIcon(rendererButton.getIcon());
+        clonedRenderer.add(editor);
+        if (isSelected) {
+            clonedRenderer.setBackground(table.getSelectionBackground());
+            clonedRenderer.setForeground(table.getSelectionForeground());
+        } else {
+            clonedRenderer.setBackground(table.getBackground());
+            clonedRenderer.setForeground(table.getForeground());
+        }
+        return clonedRenderer;
+    }
+    
+    /**
+     * 
+     * @param toClone
+     * @return
+     */
+    private JComponent clonePanel(JComponent toClone) {
+        JComponent c = null;
+        FileOutputStream fos;
+        ObjectOutputStream oos = null;
+        try {
+            fos = new FileOutputStream("myObject.ser");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(toClone);
+            oos.flush();
+            oos.close();
+            // Deserialize the object persisted in "myObject.ser"
+            FileInputStream fis = new FileInputStream("myObject.ser");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            c = (JComponent) ois.readObject();
+            ois.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return c;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.CellEditor#getCellEditorValue()
+     */
+    @Override
+    public Object getCellEditorValue() {
+        return "SomethingUseful";
+    }
+}
+```
+
+### Point 5: Register renderers and editors ###
+
+```
+...
+tree.registerRendererComponent("DualImageRenderer", new DualImageRenderer(true));
+tree.registerEditorComponent("TickButtonEditor", new TickButtonEditor());
+...
+// somewhere when you add nodes and set actions...
+String str = "Hello World!";
+TellapicNodeAction nodeAction = new DualImageNodeAction(new SomeSwingAction());
+TellapicNode node = new TellapicNode(str, null); //null = no Icon.
+node.addAction(nodeAction);
+model.insertNodeInto(node, insertNodeAt, insertAtNode.getChildCount());
+...
+```
+
+### The results with a more elaborated example ###
+
+[This is how it should look in a complete example.](http://i.imgur.com/QkmGu.png)
+
+![http://i.imgur.com/QkmGu.png](http://i.imgur.com/QkmGu.png)
+
+However, this example is not complete for a self-running test. You could check/browse the code inside the `test` package.
+
+
+## Complex Example (Linux System User) ##
+
+I created this `TellapicTreeTable` thing in order to extend the use of the SWING `JTable` (In fact, I extended [`JXTreeTable`](http://download.java.net/javadesktop/swinglabs/releases/0.8/docs/api/org/jdesktop/swingx/JXTreeTable.html)). The needs were interfacing a treetable in order to get usability from them. I don't know if I reach the objective in the proper way, but at least I feel more comfortable using my extension.
+
+The extesion will be used in my main project [tellapic](http://code.google.com/p/tellapic), but here I've used **SUMI** to show a possible implementation: User Administration.
+
+**PLEASE NOTE**: As I'm writting this, I'll make a big change in the user manager model. Basically, I'll decouple the users model from the view model. That is, I'll separate the basic model (my collection of users) from the model for the view (the `TreeTableModel`) as my model **must** be put appart from everything related to views. The `TreeTableModel` should be the specific class that wraps around or uses the most basic model. It allows me to write a model-view independent model (whatever that means). The next example will be the same, but with a proper written model.
+
+
+### What will you get? ###
+
+Well, something like [this](http://i.imgur.com/hIqDG.png):
+
+[![](http://i.imgur.com/hIqDG.png)](http://imgur.com/hIqDG)
+
+I've created a basic interface for gathering system user information. This depends on what OS you are running the software. So, I wrote a `Service` interface and I've only written concrete classes based on Linux OSes.
+
+Anyway, that has nothing to do with the use of the `TellapicTreeTable` extension and its `TellapicNode`s and `TellapicNodeAction`s, so I'll not mention anything about that. Just keep the abstraction :) (thats what an interface is it for though).
+
+### Where to start? ###
+
+If you have followed the first example, you probably want to be sure that you have something working. But the good news are: SUMI provides a bunch of standards renderers (_still coding those_) and editors (_and these_). For this complex example, you won't need to write any renderer/editor (you _should_ have learned that with the first example).
+
+I have created this _case of use_ supposing each object knows how to create it's properties information. For example, the `SumiUser` abstract class knows how to return its `TellapicNode` based on his properties (or _fields_). This is related with the above note about decoupling the model. The next example, I'll leave this job to the `TellapicTreeTableModel` instead. The model should know about the object it manages. For example, suppose you extend `TellapicTreeTableModel` with `MyPetsModel`. One initial approach will be `MyPetsModel` knowing what `MyPets` objects are. Based on that information, the model will create each `TellapicNode`s and `TellapicNodeAction`s for every `MyPets` it manages. Think about a `FileSystemModel`. The model _knows_ which file system is based on, and how files/directories are managed.
+
+That said, I'll erroneously let `SumiUser` class to implement `TellapicNodeCreatorInterface.getObjectRootNode()` method.
+
+This is the interface that I'm talking about:
+
+```
+public interface TellapicNodeCreatorInterface {
+
+    /**
+     * Gets the root node for this object
+     * @return a {code}TellapicNode{/code} that its the root of this object
+     */
+    public TellapicNode getObjectRootNode();
+}
+```
+
+And the code below shows the _erroneously_ written `SumiUser` class:
+
+```
+public class SumiUser extends Observable implements TellapicNodeCreatorInterface {
+
+    private ToggleUserVisibilityNodeAction toggleVisibilityAction = new ToggleUserVisibilityNodeAction(""); // we don't want to show extra text
+    private UserSelectedStateNodeAction    selectedStateAction    = new UserSelectedStateNodeAction(""); // we don't want to show extra text
+
+    // Some code ...
+
+    /*
+     * (non-Javadoc)
+     * @see ar.com.tellapic.sumi.treetable.TellapicNodeCreatorInterface#getObjectNodes()
+     */
+    @Override
+    public TellapicNode getObjectRootNode() {
+        // Create the root node
+        TellapicNode rootNode = new TellapicNode(this, getIcon());
+        
+        // Create the node for the visible property that will hold
+        // the action 'toggleVisibilityAction'
+        TellapicNode isVisibleNode = new TellapicNode(
+                "Visible",             // the displayed name of the node
+                getPropertyIcon(),     // the displayed icon
+                toggleVisibilityAction // the 'attached' action (i.e. a column)
+                );
+        
+        // Create the node for the name property. This will hold a default label action.
+        TellapicNode nameNode = new TellapicNode(
+                "Name",
+                getPropertyIcon(),
+                new DefaultTellapicNodeActionLabel(
+                        name,
+                        false // we will not edit this field
+                        )
+                );
+        
+        // Create the node for the id property and a default label action.
+        TellapicNode idNode = new TellapicNode(
+                "Id",
+                getPropertyIcon(),
+                new DefaultTellapicNodeActionLabel(
+                        String.valueOf(userId),
+                        false // we will not edit this field
+                        )
+                );
+        
+        // Lastly, the selected node with a custom action: 'selectedStateAction'
+        TellapicNode isSelectedNode = new TellapicNode(
+                "Selected",
+                getPropertyIcon(),
+                selectedStateAction
+                );
+        
+        // Add the nodes to the root node...
+        rootNode.add(isSelectedNode);
+        rootNode.add(isVisibleNode);
+        rootNode.add(nameNode);
+        rootNode.add(idNode);
+        
+        // Configure nodes...[OPTIONAL AND NOT FULLY TESTED]
+        isVisibleNode.setTooltipText("User visibility property");
+        isSelectedNode.setTooltipText("User selected property");
+        nameNode.setTooltipText("User name property");
+        idNode.setTooltipText("User id property");
+        
+        // Return the root
+        return rootNode;
+    }
+    
+    // How will the model know if we are selected?
+    // There are better approachs maybe, this is straighforward.
+    private class UserSelectedStateNodeAction extends DefaultTellapicNodeActionCheckBox {
+
+        // False == Not editable action, just shows information with a checkbox
+        public UserSelectedStateNodeAction(String text) {
+            super(text, false); // we don't want this action to be editable
+        }
+        
+        @Override
+        public Object getValue() {
+            return isSelected();
+        }
+    }
+    
+    // We will provide a way to interact with this user visibility property.
+    // This is another straightforward example of using @see ar.com.tellapic.gumi.TellapicNodeAction
+    private class ToggleUserVisibilityNodeAction extends DefaultTellapicNodeActionCheckBox {
+        
+        // False == Not editable action, just shows information with a checkbox
+        public ToggleUserVisibilityNodeAction(String text) {
+            super(text, false); // we don't want this action to be editable
+        }
+        
+        /* (non-Javadoc)
+         * @see ar.com.tellapic.gumi.TellapicNodeAction#setValue(java.lang.Object)
+         */
+        @Override
+        public void setValue(Object value) {
+            // Avoid halting in vain if for some reason the model is doing something wrong
+            // Log to standard output instead
+            if (value instanceof Boolean)
+                setVisible((Boolean) value);
+            else
+                System.out.println("[WRN!!] Value "+value+" should be a Boolean instance.");
+        }
+
+        /* (non-Javadoc)
+         * @see ar.com.tellapic.gumi.TellapicNodeAction#getValue()
+         */
+        @Override
+        public Object getValue() {
+            return isVisible();
+        }
+    }
+}
+```
+
+Ok. We need to extend this class for our "system users" example. So, I'll extend `SumiUser` and create `SumiSystemUser` that will adapt an interface `SystemUserInfo`. The reason why is because `SumiSystemUser` must be a different thing. So, we will use `SystemUserInfo` as it will provide the required abstraction level. Implementations may vary across platforms.
+
+The code below illustrate this interface:
+
+```
+public interface SystemUserInfo {
+
+    public ArrayList<ProcessInfo> getProcesses();
+    
+    public String getUserName();
+    
+    public int getUserId();
+    
+    public String getUserHomePath();
+
+    public int getGroupID();
+    
+    public String[] getGroups();
+}
+```
+
+A extremely basic user information. Implementations should be classes based in the underlying platform. For instance, I wrote `LinuxUserInfo`. Same applies to `ProcessInfo`, `SocketInfo` and `FileInfo` interfaces. Their intent is to collect some common attributes between platforms. Anyway, this details should not be of interest.
+
+Consider now the important parts of `SumiSystemUser` class:
+
+```
+public class SumiSystemUser extends SumiUser {
+    
+    // We adapt this class to a _real_ user system class
+    private SystemUserInfo userInfo;
+    
+    /**
+     * @param id<
+     * @param name
+     * @param visible
+     * @param remote
+     * @param selected
+     */
+    public SumiSystemUser(String userName) {
+        super(0, userName);
+        userInfo = SystemServices.getServices().getUserInfo(userName);
+        this.setUserId(userInfo.getUserId());
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see ar.com.tellapic.sumi.SumiUser#getObjectRootNode()
+     */
+    @Override
+    public TellapicNode getObjectRootNode() {
+        // Retrieve the node from our parent
+        TellapicNode rootNode = super.getObjectRootNode();
+        
+        // We add the home directory node
+        TellapicNode homeNode = new TellapicNode("Home", getPropertyIcon(), new DefaultTellapicNodeActionLabel(userInfo.getUserHomePath(), false));
+        rootNode.add(homeNode);
+        
+        // We collect the processes in use *NOW* (this is for the example, it will not auto-update)
+        // and put them in a TellapicNode.
+        Icon processIcon = new ImageIcon(SumiSystemUser.class.getResource("/icons/processor.png"));
+        TellapicNode processesRootNode = new TellapicNode("Processes", processIcon);
+        for(ProcessInfo processInfo : userInfo.getProcesses()) {
+            TellapicNode processNode = new TellapicNode(processInfo, processIcon);
+
+            String pid = String.valueOf(processInfo.getProcessId());
+            
+            // Create a default action that shows info in a JLabel
+            TellapicNodeAction pidInfo  = new DefaultTellapicNodeActionLabel(pid, false);
+            TellapicNodeAction nameInfo = new DefaultTellapicNodeActionLabel(processInfo.getProcessCommand(), false);
+            
+            // Create the nodes that will hold properties and actions
+            TellapicNode pidNode  = new TellapicNode("PID", getPropertyIcon(), pidInfo);
+            TellapicNode nameNode = new TellapicNode("Command", getPropertyIcon(), nameInfo);
+            
+            // Add the info-nodes to its parent
+            processNode.add(pidNode);
+            processNode.add(nameNode);
+            
+            // We collect the sockets in use *NOW* (this is for the example, it will not auto-update)
+            // and put them in a TellapicNode.
+            Icon socketIcon = new ImageIcon(SumiSystemUser.class.getResource("/icons/socket.png"));
+            TellapicNode socketsRootNode = new TellapicNode("Sockets", socketIcon);
+            for(SocketInfo socketInfo : processInfo.getSockets()) {
+                TellapicNode socketNode     = new TellapicNode(socketInfo, socketIcon);
+                
+                pid = String.valueOf(socketInfo.getProcessId());
+                String fd = String.valueOf(socketInfo.getFileDescriptor());
+                // Create info actions.
+                TellapicNodeAction socketNameInfo = new DefaultTellapicNodeActionLabel(socketInfo.getProcessName(), false);
+                TellapicNodeAction socketPidInfo  = new DefaultTellapicNodeActionLabel(pid, false);
+                TellapicNodeAction socketFDInfo   = new DefaultTellapicNodeActionLabel(fd, false);
+                TellapicNodeAction socketModeInfo = new DefaultTellapicNodeActionLabel(socketInfo.getFileDescriptorMode(), false);
+                TellapicNodeAction socketProtInfo = new DefaultTellapicNodeActionLabel(socketInfo.getProtocol(), false);
+                TellapicNodeAction socketTypeInfo = new DefaultTellapicNodeActionLabel(socketInfo.getType(), false);
+                // Create the nodes
+                TellapicNode socketNameNode = new TellapicNode("Process Name", getPropertyIcon(), socketNameInfo);
+                TellapicNode socketFdNode   = new TellapicNode("File Descriptor", getPropertyIcon(), socketFDInfo);
+                TellapicNode socketModeNode = new TellapicNode("File Descriptor Mode", getPropertyIcon(), socketModeInfo);
+                TellapicNode socketPidNode  = new TellapicNode("PID", getPropertyIcon(), socketPidInfo);
+                TellapicNode socketTypeNode = new TellapicNode("Protocol", getPropertyIcon(), socketTypeInfo);
+                TellapicNode socketProtNode  = new TellapicNode("Type", getPropertyIcon(), socketProtInfo);
+                // Add the nodes to its parend
+                socketNode.add(socketNameNode);
+                socketNode.add(socketPidNode);
+                socketNode.add(socketFdNode);
+                socketNode.add(socketModeNode);
+                socketNode.add(socketProtNode);
+                socketNode.add(socketTypeNode);
+                //TODO: create action for closing sockets
+                
+                // Add the parent to the root
+                socketsRootNode.add(socketNode);
+            }
+            // Create a TellapicNodeAction for killing the process
+            TellapicNodeAction killAction = new DefaultTellapicNodeActionButton(new KillProcessAction());
+            processNode.addAction(killAction);
+            processNode.add(socketsRootNode);
+            processesRootNode.add(processNode);
+        }
+        rootNode.add(processesRootNode);
+        return rootNode;
+    }
+    
+    // Create a kill linux-process SWING action
+    // TODO: extend the process interface
+    private class KillProcessAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+
+        public KillProcessAction() {
+            Icon icon = new ImageIcon(KillProcessAction.class.getResource("/icons/cancel.png"));
+            putValue(AbstractAction.SMALL_ICON, icon); 
+            putValue(AbstractAction.NAME, "Kill");
+            putValue(AbstractAction.SHORT_DESCRIPTION, "Kill process");
+        }
+
+        /* (non-Javadoc)
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            TellapicNodeAction action = (TellapicNodeAction) e.getSource();
+            if (action.getNode().getUserObject() instanceof Process) {
+                Process process = (Process) action.getNode().getUserObject();
+                int option = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure to kill process "+process.getProcessId()+"?",
+                        "Killing Process",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                        );
+                if (option == JOptionPane.CANCEL_OPTION)
+                    return;
+                // Kill 'em all
+                process.kill();
+            }
+        }
+    }
+}
+```
+
+And thats basically the system user adapter I wrote. For updating in real-time the approach should be different. This is not the goal of this example. This example is intended to show a real-world scenario and how to wrap around objects with `TellapicNode`s and `TellapicNodeAction`s. The interaction with actions for desired nodes should be straighforward. Editors and renderers provided are at least what you can expect. There's also a color editor provided stolen from java tutorials. However, they aren't finished yet. I need more code in the button editor.
+
+With both examples you should have learned how to write renderers, editors, and how to use them in nodes. Also, how to use actions for each object. `TellapicNodeAction` could be thought as an `AbstractAction` adapter for tree tables.
+
+### So, is it there a main? ###
+
+Yes, putting this together is something like this:
+
+```
+public class Main {
+    
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                final JFrame frame = new JFrame("SUMI");
+
+                // Create the model
+                TellapicTreeTableModel model = new SumiUserManager();
+
+                // Add a "system user" to the model
+                ((SumiUserManager)model).addUser(
+                    new SumiSystemUser(
+                        System.getProperty("user.name")
+                        ),
+                    null
+                );
+
+                // Create the tree table
+                final TellapicTreeTable tree = new TellapicTreeTable();
+                
+                // Set the model
+                tree.setTreeTableModel(model);
+
+                tree.setFillsViewportHeight(true);
+                // Register editors/renderers
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_COLOR_RENDERER_KEY,
+                    new DefaultTellapicColorRenderer(true)
+                );
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_CHECKBOX_RENDERER_KEY,
+                    new NodeActionCheckBoxRenderer()
+                );
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_BUTTON_RENDERER_KEY,
+                    new DefaultTellapicButtonRenderer()
+                );
+                tree.registerRendererComponent(
+                    TellapicTreeTable.DEFAULT_LABEL_RENDERER_KEY,
+                    new DefaultTellapicLabelRenderer()
+                );
+                tree.registerEditorComponent(
+                    TellapicTreeTable.DEFAULT_CHECKBOX_EDITOR_KEY,
+                    new DefaultTellapicCheckBoxCellEditor()
+                );
+                tree.registerEditorComponent(
+                    TellapicTreeTable.DEFAULT_BUTTON_EDITOR_KEY,
+                    new DefaultTellapicButtonCellEditor()
+                ); 		
+  
+                // Create a button for changing look and feel		
+                JToolBar toolbar = new JToolBar();
+                JButton lnfButton = new JButton();
+                PopupLookAndFeelMenu lnfMenu = new PopupLookAndFeelMenu();
+                lnfMenu.addLookAndFeelListener(new LookAndFeelListener(){
+                    @Override
+                    public void lookAndFeelChanged() {
+                        SwingUtilities.updateComponentTreeUI(frame);
+                        frame.pack();
+                    }
+                });
+                lnfButton.setAction(lnfMenu);
+                toolbar.add(lnfButton);
+                frame.setPreferredSize(new Dimension(800,600));
+                frame.pack();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.add(new JScrollPane(tree));
+                frame.setVisible(true);
+            }
+        });
+    }
+}
+
+// Nothing to do with treetables
+public interface LookAndFeelListener {
+    
+    public void lookAndFeelChanged();
+}
+
+// Nothing to do with treetables
+public class PopupLookAndFeelMenu extends AbstractAction implements ItemListener {
+    private static final long serialVersionUID = 1L;
+    private LookAndFeelListener listener;
+
+    public PopupLookAndFeelMenu() {
+        putValue(AbstractAction.SMALL_ICON, new ImageIcon(PopupLookAndFeelMenu.class.getResource("/icons/property.png")));
+    }
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JPopupMenu menu = new JPopupMenu();
+        String currentLnF = UIManager.getLookAndFeel().getName();
+        for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(info.getName());
+            item.setName(info.getClassName());
+            item.addItemListener(this);
+            menu.add(item);
+            item.setSelected(info.getName().equals(currentLnF));
+        }
+        JComponent invoker = (JComponent) e.getSource();
+        menu.show(invoker, invoker.getWidth()- 2, invoker.getHeight() -2);
+    }
+    
+    /**
+     * 
+     * @param lnfName
+     */
+    public void setLookAndFeel(String lnfName) {
+        try {
+            UIManager.setLookAndFeel(lnfName);
+        } catch (UnsupportedLookAndFeelException e) {
+            //fallback
+        } catch (ClassNotFoundException e) {
+            //fallback
+        } catch (InstantiationException e) {
+            //fallback
+        } catch (IllegalAccessException e) {
+            //fallback
+        }
+        listener.lookAndFeelChanged();
+    }
+
+    /* (non-Javadoc)
+     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+     */
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        setLookAndFeel(((JMenuItem)e.getSource()).getName());
+    }
+
+    /**
+     * @param runnable
+     */
+    public void addLookAndFeelListener(LookAndFeelListener l) {
+        listener = l;
+    }
+}
+```
